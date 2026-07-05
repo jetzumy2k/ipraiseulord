@@ -1,5 +1,5 @@
 <template>
-  <div class="public-page">
+  <div class="public-page donate-page">
     <h1 class="page-title">Donate</h1>
     <p class="lead">Your generosity helps us share the Gospel and maintain this ministry.</p>
 
@@ -11,36 +11,34 @@
       Donations are not available at this time. Please check back later or contact us for other ways to support the ministry.
     </div>
 
-    <div v-else-if="donations.length" class="row g-4">
-      <div v-for="item in donations" :key="item.id" class="col-md-6">
-        <div class="content-card donation-card">
-          <div class="donation-card-body">
-            <div class="donation-card-details">
-              <h3>{{ item.label }}</h3>
-              <template v-if="item.type === 'bank'">
-                <p><strong>Bank:</strong> {{ item.bank_name }}</p>
-                <p><strong>Account Name:</strong> {{ item.account_name }}</p>
-                <p v-if="item.account_number"><strong>Account Number:</strong> {{ item.account_number }}</p>
-              </template>
-              <template v-else-if="item.type === 'paypal'">
-                <p v-if="item.paypal_email"><strong>PayPal:</strong> {{ item.paypal_email }}</p>
-              </template>
-              <template v-else-if="item.type === 'ewallet'">
-                <p>
-                  <strong>{{ item.ewallet_provider }}:</strong>
-                  <span v-if="item.ewallet_number">{{ item.ewallet_number }}</span>
-                </p>
-              </template>
-              <div
-                v-if="item.instructions"
-                class="text-muted mb-0 donation-instructions"
-                v-html="item.instructions"
-              />
-            </div>
-            <div v-if="item.qr_code_path" class="donation-qr donation-qr--page">
-              <img :src="item.qr_code_path" :alt="`${item.label} QR code`" class="donation-qr-img">
-              <p class="small text-muted mb-0 mt-2">Scan to donate</p>
-            </div>
+    <div v-else-if="donations.length" class="donation-page-list">
+      <div v-for="item in donations" :key="item.id" class="content-card donation-card">
+        <div class="donation-card-body donation-card-body--page">
+          <div class="donation-card-details">
+            <h3 class="donation-card-title">{{ item.label }}</h3>
+            <template v-if="item.type === 'bank'">
+              <p><strong>Bank:</strong> {{ item.bank_name }}</p>
+              <p><strong>Account Name:</strong> {{ item.account_name }}</p>
+              <p v-if="item.account_number"><strong>Account Number:</strong> {{ item.account_number }}</p>
+            </template>
+            <template v-else-if="item.type === 'paypal'">
+              <p v-if="item.paypal_email"><strong>PayPal:</strong> {{ item.paypal_email }}</p>
+            </template>
+            <template v-else-if="item.type === 'ewallet'">
+              <p>
+                <strong>{{ item.ewallet_provider }}:</strong>
+                <span v-if="item.ewallet_number">{{ item.ewallet_number }}</span>
+              </p>
+            </template>
+            <div
+              v-if="item.instructions"
+              class="text-muted donation-instructions"
+              v-html="item.instructions"
+            />
+          </div>
+          <div v-if="item.qr_code_path" class="donation-qr donation-qr--page">
+            <img :src="item.qr_code_path" :alt="`${item.label} QR code`" class="donation-qr-img">
+            <p class="small text-muted mb-0 mt-2">Scan to donate</p>
           </div>
         </div>
       </div>

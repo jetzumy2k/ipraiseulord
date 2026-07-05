@@ -57,7 +57,7 @@
             <SidebarVerseWidget title="Psalm" scope="psalms" />
             <div v-for="ad in sidebarAds" :key="ad.id" class="sidebar-card ad-card" v-html="renderAd(ad)" />
             <DonationWidget
-              v-if="showDonations"
+              v-if="showDonations && $route.name !== 'donate'"
               :donations="donations"
               location="footer"
               compact

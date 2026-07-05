@@ -4,6 +4,7 @@ import { publicRouteSeo } from '../config/publicSeo';
 import { applyRouteSeo } from '../utils/seo';
 import PublicLayout from '../layouts/PublicLayout.vue';
 import AdminLayout from '../layouts/AdminLayout.vue';
+import { loadAdminPage } from '../admin-pages-loader.js';
 
 const withSeo = (name, config) => ({
   ...publicRouteSeo[name],
@@ -65,26 +66,26 @@ const publicChildren = [
 ];
 
 const adminListPageLoaders = {
-  'bible-versions': () => import('../pages/admin/lists/BibleVersionsListPage.vue'),
-  'bible-books': () => import('../pages/admin/lists/BibleBooksListPage.vue'),
-  'bible-chapters': () => import('../pages/admin/lists/BibleChaptersListPage.vue'),
-  'bible-verses': () => import('../pages/admin/lists/BibleVersesListPage.vue'),
-  'mass-guides': () => import('../pages/admin/lists/MassGuidesListPage.vue'),
-  fiestas: () => import('../pages/admin/lists/FiestasListPage.vue'),
-  novenas: () => import('../pages/admin/lists/NovenasListPage.vue'),
-  prayers: () => import('../pages/admin/lists/PrayersListPage.vue'),
-  proverbs: () => import('../pages/admin/lists/ProverbsListPage.vue'),
-  'daily-psalms': () => import('../pages/admin/lists/DailyPsalmsListPage.vue'),
-  advertisements: () => import('../pages/admin/lists/AdvertisementsListPage.vue'),
-  'ad-invoices': () => import('../pages/admin/lists/AdInvoicesListPage.vue'),
-  'social-media': () => import('../pages/admin/lists/SocialMediaListPage.vue'),
-  'system-settings': () => import('../pages/admin/lists/SystemSettingsListPage.vue'),
-  'page-banners': () => import('../pages/admin/lists/PageBannersListPage.vue'),
-  'donation-settings': () => import('../pages/admin/lists/DonationSettingsListPage.vue'),
-  'static-pages': () => import('../pages/admin/lists/StaticPagesListPage.vue'),
-  'contact-messages': () => import('../pages/admin/lists/ContactMessagesListPage.vue'),
-  'ai-conversations': () => import('../pages/admin/lists/AiConversationsListPage.vue'),
-  'page-visits': () => import('../pages/admin/lists/PageVisitsListPage.vue'),
+  'bible-versions': () => loadAdminPage('BibleVersionsListPage'),
+  'bible-books': () => loadAdminPage('BibleBooksListPage'),
+  'bible-chapters': () => loadAdminPage('BibleChaptersListPage'),
+  'bible-verses': () => loadAdminPage('BibleVersesListPage'),
+  'mass-guides': () => loadAdminPage('MassGuidesListPage'),
+  fiestas: () => loadAdminPage('FiestasListPage'),
+  novenas: () => loadAdminPage('NovenasListPage'),
+  prayers: () => loadAdminPage('PrayersListPage'),
+  proverbs: () => loadAdminPage('ProverbsListPage'),
+  'daily-psalms': () => loadAdminPage('DailyPsalmsListPage'),
+  advertisements: () => loadAdminPage('AdvertisementsListPage'),
+  'ad-invoices': () => loadAdminPage('AdInvoicesListPage'),
+  'social-media': () => loadAdminPage('SocialMediaListPage'),
+  'system-settings': () => loadAdminPage('SystemSettingsListPage'),
+  'page-banners': () => loadAdminPage('PageBannersListPage'),
+  'donation-settings': () => loadAdminPage('DonationSettingsListPage'),
+  'static-pages': () => loadAdminPage('StaticPagesListPage'),
+  'contact-messages': () => loadAdminPage('ContactMessagesListPage'),
+  'ai-conversations': () => loadAdminPage('AiConversationsListPage'),
+  'page-visits': () => loadAdminPage('PageVisitsListPage'),
 };
 
 const adminResourceRoutes = Object.keys(adminListPageLoaders).map((resourceKey) => ({
@@ -126,7 +127,7 @@ const router = createRouter({
         {
           path: 'dashboard',
           name: 'admin-dashboard',
-          component: () => import('../pages/admin/DashboardPage.vue'),
+          component: () => loadAdminPage('DashboardPage'),
           meta: { requiresAuth: true, requiresSuperAdmin: true, title: 'Dashboard' },
         },
         ...adminResourceRoutes,

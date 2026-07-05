@@ -64,6 +64,7 @@
 
 <script>
 import { useAuthStore } from '../stores/auth';
+import { prefetchAdminPages } from '../admin-pages-loader.js';
 
 export default {
   name: 'AdminLayout',
@@ -124,6 +125,7 @@ export default {
     };
   },
   mounted() {
+    prefetchAdminPages();
     document.body.classList.add('sidebar-mini', 'layout-fixed');
   },
   unmounted() {

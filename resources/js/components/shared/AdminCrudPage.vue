@@ -554,9 +554,17 @@ export default {
         }
 
         if (row[field.key] !== undefined && row[field.key] !== null) {
+          let value = row[field.key];
+
+          if (field.type === 'date' && typeof value === 'string') {
+            value = value.slice(0, 10);
+          } else if (field.type === 'datetime-local' && typeof value === 'string') {
+            value = value.replace(' ', 'T').slice(0, 16);
+          }
+
           this.form[field.key] = field.type === 'select'
-            ? this.normalizeOptionValue(row[field.key])
-            : row[field.key];
+            ? this.normalizeOptionValue(value)
+            : value;
         }
       });
 

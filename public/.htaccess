@@ -19,6 +19,11 @@
     RewriteCond %{REQUEST_URI} (.+)/$
     RewriteRule ^ %1 [L,R=301]
 
+    # Missing Vite build files must not fall through to the SPA (returns HTML and breaks JS modules).
+    RewriteCond %{REQUEST_URI} ^/build/
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteRule ^ - [R=404,L]
+
     # Send Requests To Front Controller...
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteCond %{REQUEST_FILENAME} !-f
