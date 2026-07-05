@@ -294,6 +294,7 @@ export default {
       requirements: null,
       loadingRequirements: false,
       testingDb: false,
+      installing: false,
       dbTestOk: false,
       dbTestMessage: '',
       form: {
@@ -324,7 +325,7 @@ export default {
       if (value === 2 && !this.requirements) {
         this.loadRequirements();
       }
-      if (value === 5) {
+      if (value === 5 && !this.installing) {
         this.runInstall();
       }
     },
@@ -368,6 +369,11 @@ export default {
       }
     },
     async runInstall() {
+      if (this.installing) {
+        return;
+      }
+
+      this.installing = true;
       this.error = null;
       try {
         const { data } = await axios.post('/install/run', this.form);
@@ -378,8 +384,17 @@ export default {
           this.step = 4;
         }
       } catch (err) {
-        this.error = err.response?.data?.message || 'Installation failed.';
+        const payload = err.response?.data;
+
+        if (payload?.errors) {
+          this.error = Object.values(payload.errors).flat().join(' ');
+        } else {
+          this.error = payload?.message || payload?.hint || 'Installation failed.';
+        }
+
         this.step = 4;
+      } finally {
+        this.installing = false;
       }
     },
     nextStep() {

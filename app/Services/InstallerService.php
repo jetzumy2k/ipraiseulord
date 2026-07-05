@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\User;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Schema;
@@ -39,7 +40,7 @@ class InstallerService
         }
 
         try {
-            return Schema::hasTable('users');
+            return Schema::hasTable('users') && User::query()->exists();
         } catch (Throwable) {
             return false;
         }
@@ -56,7 +57,12 @@ class InstallerService
         }
 
         try {
-            return Schema::hasTable('users') && Schema::hasTable('migrations');
+            if (! Schema::hasTable('users') || ! Schema::hasTable('migrations')) {
+                return false;
+            }
+
+            // Partial migrations leave empty tables — only skip the wizard after seeding.
+            return User::query()->exists();
         } catch (Throwable) {
             return false;
         }
@@ -184,7 +190,10 @@ class InstallerService
     public function runInstallation(array $data): array
     {
         if ($this->isInstalled()) {
-            return ['success' => false, 'message' => 'Application is already installed.'];
+            return [
+                'success' => false,
+                'message' => 'Application is already installed. Delete storage/app/installed.lock only if you intend to reinstall.',
+            ];
         }
 
         set_time_limit(600);
@@ -199,10 +208,10 @@ class InstallerService
             $this->refreshApplicationConfig();
 
             Artisan::call('key:generate', ['--force' => true]);
-            Artisan::call('migrate', ['--force' => true]);
+            Artisan::call('migrate:fresh', ['--force' => true]);
+            Artisan::call('db:seed', ['--force' => true]);
             $this->enableProductionDrivers();
             $this->refreshApplicationConfig();
-            Artisan::call('db:seed', ['--force' => true]);
 
             $this->createLockFile($data);
             $this->finalizeInstallation();
@@ -358,7 +367,14 @@ class InstallerService
             // Symlinks may be disabled on shared hosting.
         }
 
-        Artisan::call('optimize:clear');
+        try {
+            Artisan::call('optimize:clear');
+        } catch (Throwable) {
+            // Cache table may be unavailable if drivers were switched mid-install.
+            Artisan::call('config:clear');
+            Artisan::call('route:clear');
+            Artisan::call('view:clear');
+        }
     }
 
     protected function escapeEnvValue(string $value): string

@@ -17,7 +17,10 @@ class EnsureNotInstalled
     {
         if ($this->installer->isInstalled()) {
             if ($request->expectsJson()) {
-                return response()->json(['message' => 'Application is already installed.'], 403);
+                return response()->json([
+                    'message' => 'Application is already installed.',
+                    'hint' => 'Remove storage/app/installed.lock and drop all database tables only if you need to reinstall.',
+                ], 403);
             }
 
             return redirect('/');

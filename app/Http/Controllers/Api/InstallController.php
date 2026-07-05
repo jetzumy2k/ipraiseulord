@@ -61,9 +61,18 @@ class InstallController extends Controller
             'admin.name' => ['required', 'string', 'max:255'],
             'admin.email' => ['required', 'email', 'max:255'],
             'admin.password' => ['required', 'string', 'min:8', 'confirmed'],
+            'admin.password_confirmation' => ['required', 'string', 'min:8'],
         ]);
 
-        $result = $this->installer->runInstallation($validated);
+        $result = $this->installer->runInstallation([
+            'database' => $validated['database'],
+            'site' => $validated['site'],
+            'admin' => [
+                'name' => $validated['admin']['name'],
+                'email' => $validated['admin']['email'],
+                'password' => $validated['admin']['password'],
+            ],
+        ]);
 
         return response()->json($result, $result['success'] ? 200 : 422);
     }
