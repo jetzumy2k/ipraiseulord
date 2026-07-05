@@ -20,6 +20,7 @@ use App\Http\Controllers\Api\PageBannerController;
 use App\Http\Controllers\Api\PageVisitController;
 use App\Http\Controllers\Api\PrayerController;
 use App\Http\Controllers\Api\ProverbController;
+use App\Http\Controllers\Api\CaptchaController;
 use App\Http\Controllers\Api\PublicController;
 use App\Http\Controllers\Api\SocialMediaSettingController;
 use App\Http\Controllers\Api\StaticPageController;
@@ -52,6 +53,7 @@ Route::prefix('public')->group(function () {
     Route::get('mass/guide', [PublicController::class, 'massGuide']);
     Route::get('ads/{placement}', [PublicController::class, 'adsByPlacement']);
     Route::get('settings', [PublicController::class, 'settings']);
+    Route::get('captcha', [CaptchaController::class, 'show']);
     Route::get('banners', [PublicController::class, 'pageBanners']);
     Route::get('pages', [PublicController::class, 'staticPages']);
     Route::get('pages/route/{route}', [PublicController::class, 'staticPageByRoute']);

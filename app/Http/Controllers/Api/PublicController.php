@@ -18,6 +18,7 @@ use App\Models\SocialMediaSetting;
 use App\Models\StaticPage;
 use App\Models\SystemSetting;
 use App\Services\AnalyticsService;
+use App\Services\CaptchaService;
 use App\Services\DonationSettingsService;
 use App\Services\FiestaDateCalculator;
 use App\Services\MassGuideFetchService;
@@ -234,16 +235,25 @@ class PublicController extends Controller
         return response()->json($visit, 201);
     }
 
-    public function submitContact(Request $request): JsonResponse
+    public function submitContact(Request $request, CaptchaService $captcha): JsonResponse
     {
         $data = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'max:255'],
             'subject' => ['nullable', 'string', 'max:255'],
             'message' => ['required', 'string'],
+            'captcha_id' => ['required', 'uuid'],
+            'captcha_answer' => ['required', 'string', 'max:100'],
         ]);
 
-        $message = ContactMessage::create($data);
+        $captcha->validateOrFail($data['captcha_id'], $data['captcha_answer'], 'contact');
+
+        $message = ContactMessage::create([
+            'name' => $data['name'],
+            'email' => $data['email'],
+            'subject' => $data['subject'] ?? null,
+            'message' => $data['message'],
+        ]);
 
         return response()->json($message, 201);
     }

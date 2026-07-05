@@ -15,7 +15,16 @@
             <label for="password" class="form-label">Password</label>
             <input id="password" v-model="form.password" type="password" class="form-control" required>
           </div>
-          <button type="submit" class="btn btn-primary w-100" :disabled="auth.loading">
+
+          <FormCaptcha
+            ref="captcha"
+            context="login"
+            v-model:captcha-id="form.captcha_id"
+            v-model:captcha-answer="form.captcha_answer"
+            :disabled="auth.loading"
+          />
+
+          <button type="submit" class="btn btn-primary w-100" :disabled="auth.loading || !form.captcha_id">
             <i v-if="auth.loading" class="fas fa-spinner fa-spin me-1" />
             Sign In
           </button>
@@ -26,13 +35,20 @@
 </template>
 
 <script>
+import FormCaptcha from '../../components/shared/FormCaptcha.vue';
 import { useAuthStore } from '../../stores/auth';
 
 export default {
   name: 'LoginPage',
+  components: { FormCaptcha },
   data() {
     return {
-      form: { email: '', password: '' },
+      form: {
+        email: '',
+        password: '',
+        captcha_id: '',
+        captcha_answer: '',
+      },
       error: null,
     };
   },
@@ -49,11 +65,14 @@ export default {
         const redirect = this.$route.query.redirect || '/admin/dashboard';
         this.$router.push(redirect);
       } catch (err) {
-        if (err.response?.data?.errors?.email) {
+        if (err.response?.data?.errors?.captcha_answer) {
+          this.error = err.response.data.errors.captcha_answer[0];
+        } else if (err.response?.data?.errors?.email) {
           this.error = err.response.data.errors.email[0];
         } else {
           this.error = 'Invalid credentials.';
         }
+        await this.$refs.captcha.refresh();
       }
     },
   },

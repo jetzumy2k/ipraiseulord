@@ -1059,6 +1059,37 @@
   min-width: 0;
 }
 
+.public-site .form-captcha-question,
+.login-page .form-captcha-question,
+.login-card .form-captcha-question {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding: 0.85rem 1rem;
+  margin-bottom: 0.75rem;
+  border: 1px solid rgba(92, 46, 46, 0.12);
+  border-radius: 4px;
+  background: rgba(92, 46, 46, 0.04);
+  font-family: var(--serif);
+  line-height: 1.5;
+}
+
+.public-site .form-captcha-type,
+.login-page .form-captcha-type,
+.login-card .form-captcha-type {
+  display: inline-block;
+  align-self: flex-start;
+  padding: 0.15rem 0.5rem;
+  border-radius: 999px;
+  background: var(--burgundy);
+  color: #fff;
+  font-family: system-ui, sans-serif;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
 .public-site .donation-widget.compact {
   background: var(--card-bg);
   border: 1px solid rgba(92, 46, 46, 0.1);
