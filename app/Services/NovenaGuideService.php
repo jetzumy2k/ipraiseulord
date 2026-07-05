@@ -168,6 +168,13 @@ class NovenaGuideService
             'saint-jude' => 'Saint Jude, apostle and martyr, pray for us.',
             'immaculate-conception' => 'O Mary, conceived without sin, pray for us who have recourse to thee.',
             'divine-mercy' => 'For the sake of His sorrowful Passion, have mercy on us and on the whole world.',
+            'saint-joseph' => 'Saint Joseph, foster-father of Jesus, pray for us.',
+            'saint-therese' => 'Saint Thérèse, the Little Flower, pray for us.',
+            'saint-anthony' => 'Saint Anthony of Padua, pray for us.',
+            'miraculous-medal' => 'O Mary, conceived without sin, pray for us who have recourse to thee.',
+            'our-lady-of-lourdes' => 'Our Lady of Lourdes, pray for us.',
+            'pentecost' => 'Come, Holy Spirit, fill the hearts of your faithful.',
+            'saint-rita' => 'Saint Rita of Cascia, advocate of the impossible, pray for us.',
             default => "{$patron}, pray for us.",
         };
     }
