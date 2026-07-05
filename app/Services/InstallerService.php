@@ -252,6 +252,8 @@ class InstallerService
             'DB_USERNAME' => $db['username'],
             'DB_PASSWORD' => $this->escapeEnvValue($db['password'] ?? ''),
             'SANCTUM_STATEFUL_DOMAINS' => implode(',', $sanctumDomains),
+            'SESSION_DRIVER' => 'database',
+            'CACHE_STORE' => 'database',
         ];
 
         $env = File::get(base_path('.env'));

@@ -531,6 +531,21 @@ npm run install:server
 npm run build
 ```
 
+### “No application encryption key has been specified” (500 at `/install`)
+
+Laravel needs an `APP_KEY` in `.env` before it can boot. On a fresh upload, copy `.env.example` to `.env` and ensure the project root (or `.env` file) is writable — the app auto-generates a temporary key on the first visit to `/install` when the app is not yet installed.
+
+If the error persists:
+
+```bash
+cd ~/praise-u-lord
+cp .env.example .env
+chmod 664 .env
+php artisan key:generate
+```
+
+Then reload `/install`. The setup wizard will generate a permanent key when you run installation.
+
 ### LiteSpeed or cPanel shows “404 Not Found” at `/install`
 
 If the error page says **“Proudly powered by LiteSpeed Web Server”** (not a Laravel page), the request never reached the app. Fix the server setup:
