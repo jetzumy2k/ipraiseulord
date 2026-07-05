@@ -531,6 +531,10 @@ npm run install:server
 npm run build
 ```
 
+### “Specified key was too long” during installation
+
+Older MySQL/MariaDB on cPanel limits index size with `utf8mb4`. This project sets `Schema::defaultStringLength(191)` automatically. If a previous install attempt failed partway through, empty the database (drop all tables or recreate it in cPanel), remove `storage/app/installed.lock` if present, then run the wizard again.
+
 ### “No application encryption key has been specified” (500 at `/install`)
 
 Laravel needs an `APP_KEY` in `.env` before it can boot. On a fresh upload, copy `.env.example` to `.env` and ensure the project root (or `.env` file) is writable — the app auto-generates a temporary key on the first visit to `/install` when the app is not yet installed.
