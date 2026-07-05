@@ -533,7 +533,17 @@ npm run build
 
 ### “Specified key was too long” during installation
 
-Older MySQL/MariaDB on cPanel limits index size with `utf8mb4`. This project sets `Schema::defaultStringLength(191)` automatically. If a previous install attempt failed partway through, empty the database (drop all tables or recreate it in cPanel), remove `storage/app/installed.lock` if present, then run the wizard again.
+Older MySQL/MariaDB on cPanel limits index size with `utf8mb4`. This project sets `Schema::defaultStringLength(191)` for single-column indexes and shortens columns used in **composite** indexes (e.g. `failed_jobs`, `fiestas`).
+
+If a previous install attempt failed partway through:
+
+1. In cPanel → **phpMyAdmin**, drop **all tables** in your database (or delete and recreate the database).
+2. Remove the install lock:
+   ```bash
+   rm storage/app/installed.lock
+   ```
+3. Upload the latest migration files and `app/Providers/AppServiceProvider.php`.
+4. Run the wizard again at `/install`.
 
 ### “No application encryption key has been specified” (500 at `/install`)
 

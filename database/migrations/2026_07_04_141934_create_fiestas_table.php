@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::create('fiestas', function (Blueprint $table) {
             $table->id();
-            $table->string('title');
+            $table->string('title', 120);
             $table->unsignedTinyInteger('month')->nullable();
             $table->unsignedTinyInteger('day')->nullable();
             $table->string('category');
@@ -18,7 +18,7 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->string('liturgical_rank')->nullable();
             $table->boolean('is_movable')->default(false);
-            $table->string('movable_rule')->nullable();
+            $table->string('movable_rule', 80)->nullable();
             $table->boolean('is_active')->default(true);
             $table->unsignedInteger('sort_order')->default(0);
             $table->timestamps();
