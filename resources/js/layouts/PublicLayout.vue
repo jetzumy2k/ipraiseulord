@@ -22,12 +22,14 @@
           :style="bannerOverlayStyle"
         />
         <div class="site-banner__content container text-center py-4">
-          <router-link to="/" class="site-logo">{{ siteName }}</router-link>
-          <p v-if="bannerVerse" class="daily-psalm mt-3 mb-0">
-            <em>{{ bannerVerse.reference }}</em>
-            <span v-if="bannerVerse.version" class="banner-verse-version">({{ bannerVerse.version }})</span>
-            <span class="d-block psalm-text">{{ bannerVerse.text }}</span>
-          </p>
+          <div class="site-banner__text-panel">
+            <router-link to="/" class="site-logo">{{ siteName }}</router-link>
+            <p v-if="bannerVerse" class="daily-psalm mt-3 mb-0">
+              <em>{{ bannerVerse.reference }}</em>
+              <span v-if="bannerVerse.version" class="banner-verse-version">({{ bannerVerse.version }})</span>
+              <span class="d-block psalm-text">{{ bannerVerse.text }}</span>
+            </p>
+          </div>
         </div>
       </div>
       <nav class="site-nav">
@@ -202,7 +204,7 @@ export default {
       };
     },
     bannerOverlayStyle() {
-      const opacity = this.currentBanner?.overlay_opacity ?? 0.55;
+      const opacity = this.currentBanner?.overlay_opacity ?? 0.65;
 
       return {
         opacity,

@@ -37,7 +37,7 @@ class PageBannerSeeder extends Seeder
                 [
                     'label' => $page['label'],
                     'sort_order' => $page['sort_order'],
-                    'overlay_opacity' => 0.55,
+                    'overlay_opacity' => 0.65,
                     'is_active' => true,
                 ]
             );
