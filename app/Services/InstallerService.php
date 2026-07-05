@@ -187,32 +187,51 @@ class InstallerService
      * @param  array<string, mixed>  $data
      * @return array{success: bool, message: string, admin_email?: string}
      */
-    public function runInstallation(array $data): array
+    public function runInstallation(array $data, bool $force = false, ?callable $log = null): array
     {
-        if ($this->isInstalled()) {
+        $log ??= static fn (string $message): null => null;
+
+        if (! $force && $this->isInstalled()) {
             return [
                 'success' => false,
                 'message' => 'Application is already installed. Delete storage/app/installed.lock only if you intend to reinstall.',
             ];
         }
 
-        set_time_limit(600);
+        if ($force && File::exists($this->lockPath())) {
+            File::delete($this->lockPath());
+        }
 
+        set_time_limit(0);
+        ini_set('memory_limit', '512M');
+
+        $log('Testing database connection…');
         $dbTest = $this->testDatabaseConnection($data['database']);
         if (! $dbTest['success']) {
             return $dbTest;
         }
 
         try {
+            $log('Writing .env file…');
             $this->writeEnvironmentFile($data);
             $this->refreshApplicationConfig();
 
+            $log('Generating application key…');
             Artisan::call('key:generate', ['--force' => true]);
+
+            $log('Running migrations (migrate:fresh)…');
             Artisan::call('migrate:fresh', ['--force' => true]);
+            $log(trim(Artisan::output()));
+
+            $log('Seeding database (Bible import may take several minutes)…');
             Artisan::call('db:seed', ['--force' => true]);
+            $log(trim(Artisan::output()));
+
+            $log('Enabling production cache, session, and queue drivers…');
             $this->enableProductionDrivers();
             $this->refreshApplicationConfig();
 
+            $log('Finalizing installation…');
             $this->createLockFile($data);
             $this->finalizeInstallation();
 

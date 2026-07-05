@@ -431,6 +431,45 @@ After success, `/install` is disabled and redirects to the homepage.
 
 **Re-running installation:** Delete `storage/app/installed.lock` and empty or drop the database tables only if you intend a full reset. This is destructive.
 
+### Install from terminal (recommended on cPanel)
+
+Shared hosting often **times out** the browser installer during Bible seeding (5–15 minutes). Use the terminal instead:
+
+```bash
+cd ~/ipraiseulord
+cp .env.example .env   # if .env does not exist
+php artisan app:install
+```
+
+The command prompts for database credentials, site URL, and admin account. It has **no web timeout** and shows progress in the terminal.
+
+**Non-interactive install** (all options on one line):
+
+```bash
+php artisan app:install \
+  --db-host=localhost \
+  --db-port=3306 \
+  --db-name=julyuuvh_ipraiseulord \
+  --db-user=julyuuvh_ipraiseulord \
+  --db-password='YOUR_DB_PASSWORD' \
+  --url=https://ipraiseulord.julytapz-webdev.com \
+  --name='Praise U Lord' \
+  --admin-name='Your Name' \
+  --admin-email=you@example.com \
+  --admin-password='YourAdminPassword123!' \
+  --app-env=production
+```
+
+Wrap passwords in **single quotes** if they contain `#`, `;`, `$`, or `!`.
+
+**Reinstall from terminal:**
+
+```bash
+php artisan app:install --force
+```
+
+This drops all tables and runs a fresh install.
+
 ---
 
 ## After installation
@@ -627,16 +666,20 @@ If the error page says **“Proudly powered by LiteSpeed Web Server”** (not a 
 
 ### Installation timeout
 
-Bible seeding can take 5–15 minutes. Increase:
+Bible seeding can take 5–15 minutes. **cPanel web requests often time out** before seeding finishes.
 
-- PHP `max_execution_time` (600 recommended for first install)
-- Nginx `fastcgi_read_timeout`
-- cPanel PHP settings
-
-Then reload `/install` and run again after fixing permissions, or use CLI:
+**Recommended:** install from the terminal instead:
 
 ```bash
-php artisan migrate --force
+cd ~/ipraiseulord
+php artisan app:install
+```
+
+If you must use the browser wizard, increase PHP `max_execution_time` (600+) in cPanel → **MultiPHP INI Editor**, then reload `/install`.
+
+Manual fallback after migrations succeed:
+
+```bash
 php artisan db:seed --force
 touch storage/app/installed.lock
 ```
