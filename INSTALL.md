@@ -362,6 +362,16 @@ cp .env.example .env
 
 If Terminal is not available, run `composer install` locally and upload the `vendor/` folder.
 
+**Build frontend on the server (optional):** Prefer building on your computer and uploading `public/build/`. If you must build on cPanel, use the project Terminal (not the Node.js “Run NPM Install” button):
+
+```bash
+cd ~/ipraiseulord
+npm run install:server
+npm run build
+```
+
+Do **not** use cPanel’s **Setup Node.js App → Run NPM Install** alone — it installs into a separate virtualenv and can trigger `husky: command not found` errors.
+
 ### Step 6 — Permissions
 
 In **File Manager**, set permissions:
@@ -476,14 +486,36 @@ On your server:
 ```bash
 cd ~/ipraiseulord   # your project folder
 rm -rf node_modules
-npm install
+npm run install:server
 npm run build
 ```
 
-If you still see errors, run explicitly:
+Or run the flags directly:
 
 ```bash
-npm install --legacy-peer-deps
+npm install --legacy-peer-deps --ignore-scripts
+npm run build
+```
+
+### “husky: command not found” (error code 127)
+
+AdminLTE depends on **summernote**, whose newer releases run `husky install` after install. That fails on cPanel and most shared hosts because Husky is a dev-only Git hook tool.
+
+This project fixes that in two ways:
+
+1. **`summernote` is pinned to 0.8.18** via `package.json` overrides (no postinstall script).
+2. **`.npmrc` sets `ignore-scripts=true`** as a fallback.
+
+Always install from your **project folder** (where `package.json` and `.npmrc` live), not only via cPanel’s “Run NPM Install” button — that can install into a separate Node virtualenv and skip project settings.
+
+**Recommended on cPanel:** build assets on your computer, then upload only `public/build/` to the server and skip `npm install` on the server entirely.
+
+If you must build on the server:
+
+```bash
+cd ~/ipraiseulord
+rm -rf node_modules
+npm run install:server
 npm run build
 ```
 

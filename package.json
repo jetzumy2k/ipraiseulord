@@ -6,7 +6,8 @@
         "build": "vite build",
         "dev": "vite",
         "serve": "php artisan serve --host=127.0.0.1 --port=8888",
-        "start": "concurrently -n vite,laravel -c blue,green \"npm run dev\" \"npm run serve\""
+        "start": "concurrently -n vite,laravel -c blue,green \"npm run dev\" \"npm run serve\"",
+        "install:server": "npm install --legacy-peer-deps --ignore-scripts"
     },
     "devDependencies": {
         "@tailwindcss/vite": "^4.0.0",
@@ -34,6 +35,7 @@
             "bootstrap-switch": {
                 "bootstrap": "4.6.2"
             }
-        }
+        },
+        "summernote": "0.8.18"
     }
 }
