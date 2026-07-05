@@ -1,5 +1,5 @@
 export const BANNER_WIDTH = 1920;
-export const BANNER_HEIGHT = 360;
+export const BANNER_HEIGHT = 480;
 export const BANNER_ASPECT_RATIO = BANNER_WIDTH / BANNER_HEIGHT;
 
 export const BANNER_ROUTE_FALLBACKS = {

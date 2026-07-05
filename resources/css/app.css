@@ -70,13 +70,14 @@
 
 .public-site .site-banner {
   position: relative;
+  min-height: 480px;
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center;
 }
 
 .public-site .site-banner--image {
-  min-height: 220px;
+  min-height: 480px;
 }
 
 .public-site .site-banner__overlay {
@@ -89,6 +90,11 @@
 .public-site .site-banner__content {
   position: relative;
   z-index: 1;
+  min-height: 480px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 .public-site .site-banner--image .site-logo,
@@ -1311,7 +1317,7 @@
   max-width: 100%;
   max-height: none;
   width: 100%;
-  aspect-ratio: 16 / 3;
+  aspect-ratio: 4 / 1;
   object-fit: cover;
 }
 

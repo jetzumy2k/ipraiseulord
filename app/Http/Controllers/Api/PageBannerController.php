@@ -17,7 +17,7 @@ class PageBannerController extends Controller
 
     public const BANNER_WIDTH = 1920;
 
-    public const BANNER_HEIGHT = 360;
+    public const BANNER_HEIGHT = 480;
 
     protected function modelClass(): string
     {

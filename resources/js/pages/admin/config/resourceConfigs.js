@@ -651,7 +651,7 @@ export const resourceConfigs = {
         type: 'banner-image',
         fileKey: 'banner_image',
         col: 'col-12',
-        help: 'Recommended size 1920 × 360 px. Use the cropper after selecting an image.',
+        help: 'Recommended size 1920 × 480 px. Use the cropper after selecting an image.',
       },
       {
         key: 'overlay_opacity',
