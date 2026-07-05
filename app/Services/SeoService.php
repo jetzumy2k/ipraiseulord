@@ -6,6 +6,7 @@ use App\Models\Novena;
 use App\Models\Prayer;
 use App\Models\StaticPage;
 use App\Models\SystemSetting;
+use Throwable;
 
 class SeoService
 {
@@ -108,7 +109,11 @@ class SeoService
 
     public function setting(string $key, ?string $default = null): ?string
     {
-        $value = SystemSetting::query()->where('key', $key)->value('value');
+        try {
+            $value = SystemSetting::query()->where('key', $key)->value('value');
+        } catch (Throwable) {
+            return $default;
+        }
 
         if ($value === null || $value === '') {
             return $default;
@@ -119,8 +124,12 @@ class SeoService
 
     protected function donationsPubliclyVisible(): bool
     {
-        return DonationSettingsService::isGloballyEnabled()
-            && DonationSettingsService::publicDonations()->isNotEmpty();
+        try {
+            return DonationSettingsService::isGloballyEnabled()
+                && DonationSettingsService::publicDonations()->isNotEmpty();
+        } catch (Throwable) {
+            return false;
+        }
     }
 
     /**

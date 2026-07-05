@@ -597,13 +597,58 @@ php artisan db:seed --force
 touch storage/app/installed.lock
 ```
 
-### 500 error after install
+### `.env` values with `#`, `;`, `=`, or `$`
+
+Unquoted values are truncated at `#` (treated as a comment). Passwords with special characters must be wrapped in double quotes:
+
+```env
+DB_PASSWORD=";e=81!JT~v~HUr4O"
+MAIL_PASSWORD="L4wh9OM%hBczWxt;"
+INSTALL_ADMIN_PASSWORD="Bagets123!$#"
+```
+
+After editing `.env`, always run:
 
 ```bash
-php artisan config:clear
-php artisan cache:clear
+php artisan optimize:clear
+```
+
+### 500 error after install
+
+Most often caused by missing frontend assets or stale cache on the server.
+
+**1. Upload built frontend assets**
+
+```bash
+# On your computer
+npm run build
+```
+
+Upload the entire `public/build/` folder to the server.
+
+**2. Clear Laravel cache and fix permissions**
+
+```bash
+cd ~/praise-u-lord
+php artisan optimize:clear
+php artisan storage:link
 chmod -R 775 storage bootstrap/cache
 ```
+
+**3. Check the error log**
+
+```bash
+tail -50 storage/logs/laravel.log
+```
+
+Common log messages:
+
+| Log message | Fix |
+|-------------|-----|
+| `Vite manifest not found` | Upload `public/build/` (see step 1) |
+| `No application encryption key` | Run `php artisan key:generate` |
+| `Access denied for user` | Fix database credentials in `.env` |
+| `Permission denied` | Run `chmod -R 775 storage bootstrap/cache` |
 
 ### “Application is already installed” but you need the wizard
 

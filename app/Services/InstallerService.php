@@ -203,6 +203,7 @@ class InstallerService
             Artisan::call('db:seed', ['--force' => true]);
 
             $this->createLockFile($data);
+            $this->finalizeInstallation();
 
             return [
                 'success' => true,
@@ -250,7 +251,7 @@ class InstallerService
             'DB_PORT' => (string) ($db['port'] ?? 3306),
             'DB_DATABASE' => $db['database'],
             'DB_USERNAME' => $db['username'],
-            'DB_PASSWORD' => $this->escapeEnvValue($db['password'] ?? ''),
+            'DB_PASSWORD' => $this->wrapEnvValue($db['password'] ?? ''),
             'SANCTUM_STATEFUL_DOMAINS' => implode(',', $sanctumDomains),
             'SESSION_DRIVER' => 'database',
             'CACHE_STORE' => 'database',
@@ -272,7 +273,7 @@ class InstallerService
         $installVars = [
             'INSTALL_ADMIN_NAME' => '"'.$this->escapeEnvValue($admin['name']).'"',
             'INSTALL_ADMIN_EMAIL' => $admin['email'],
-            'INSTALL_ADMIN_PASSWORD' => $this->escapeEnvValue($admin['password']),
+            'INSTALL_ADMIN_PASSWORD' => $this->wrapEnvValue($admin['password']),
         ];
 
         foreach ($installVars as $key => $value) {
@@ -316,9 +317,33 @@ class InstallerService
         ], JSON_PRETTY_PRINT));
     }
 
+    protected function finalizeInstallation(): void
+    {
+        try {
+            Artisan::call('storage:link');
+        } catch (Throwable) {
+            // Symlinks may be disabled on shared hosting.
+        }
+
+        Artisan::call('optimize:clear');
+    }
+
     protected function escapeEnvValue(string $value): string
     {
         return str_replace(['\\', '"'], ['\\\\', '\\"'], $value);
+    }
+
+    protected function wrapEnvValue(string $value): string
+    {
+        if ($value === '') {
+            return '""';
+        }
+
+        if (! preg_match('/[\s#;=\$"\'\\\\]/', $value)) {
+            return $value;
+        }
+
+        return '"'.$this->escapeEnvValue($value).'"';
     }
 
     protected function wrapEnvUrl(string $url): string

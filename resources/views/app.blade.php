@@ -30,9 +30,32 @@
     @if(!empty($seo['og_image']))
         <meta name="twitter:image" content="{{ $seo['og_image'] }}">
     @endif
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @php
+        $viteReady = file_exists(public_path('build/manifest.json')) || file_exists(public_path('hot'));
+    @endphp
+    @if ($viteReady)
+        @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @endif
 </head>
 <body>
     <div id="app"></div>
+    @unless ($viteReady)
+        <noscript>
+            <div style="max-width: 40rem; margin: 2rem auto; padding: 1.5rem; font-family: system-ui, sans-serif; text-align: center;">
+                <h1 style="font-size: 1.25rem; margin-bottom: 0.75rem;">Frontend assets are missing</h1>
+                <p style="margin: 0; color: #555;">
+                    Run <code>npm run build</code> on your computer, then upload the
+                    <code>public/build</code> folder to the server.
+                </p>
+            </div>
+        </noscript>
+        <div style="max-width: 40rem; margin: 2rem auto; padding: 1.5rem; font-family: system-ui, sans-serif; text-align: center;">
+            <h1 style="font-size: 1.25rem; margin-bottom: 0.75rem;">Frontend assets are missing</h1>
+            <p style="margin: 0; color: #555;">
+                Run <code>npm run build</code> on your computer, then upload the
+                <code>public/build</code> folder to the server.
+            </p>
+        </div>
+    @endunless
 </body>
 </html>
