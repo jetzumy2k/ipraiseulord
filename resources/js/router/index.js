@@ -130,6 +130,12 @@ const router = createRouter({
           component: () => loadAdminPage('DashboardPage'),
           meta: { requiresAuth: true, requiresSuperAdmin: true, title: 'Dashboard' },
         },
+        {
+          path: 'seo-settings',
+          name: 'admin-seo-settings',
+          component: () => import('../pages/admin/SeoSettingsPage.vue'),
+          meta: { requiresAuth: true, requiresSuperAdmin: true, title: 'SEO Settings' },
+        },
         ...adminResourceRoutes,
       ],
     },

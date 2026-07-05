@@ -17,8 +17,10 @@ class SystemSettingSeeder extends Seeder
             ['key' => 'show_temperature', 'value' => 'true', 'group' => 'display'],
             ['key' => 'weather_city', 'value' => 'Manila', 'group' => 'display'],
             ['key' => 'donations_enabled', 'value' => 'true', 'group' => 'donations'],
-            ['key' => 'seo_default_description', 'value' => 'Read the Bible, follow daily Mass guides, novenas, prayers, and Catholic feast days on Praise U Lord.', 'group' => 'seo'],
-            ['key' => 'seo_default_keywords', 'value' => 'bible, catholic, mass guide, novenas, prayers, fiesta calendar, scripture, devotionals', 'group' => 'seo'],
+            ['key' => 'seo_default_description', 'value' => 'Your Catholic companion online — daily Mass guides, Bible readings, novenas, prayers, and the fiesta calendar for the Philippines and the world.', 'group' => 'seo'],
+            ['key' => 'seo_default_keywords', 'value' => 'catholic bible, mass guide, daily readings, novenas, prayers, fiesta calendar, liturgy, devotionals, philippines, filipino catholic', 'group' => 'seo'],
+            ['key' => 'seo_home_headline', 'value' => 'Mass Guide, Novenas, Prayers, Fiesta Calendar & Bible', 'group' => 'seo'],
+            ['key' => 'seo_page_meta', 'value' => '{}', 'group' => 'seo'],
             ['key' => 'seo_og_image', 'value' => '/images/og-default.png', 'group' => 'seo'],
             ['key' => 'seo_twitter_handle', 'value' => '', 'group' => 'seo'],
         ];

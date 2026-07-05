@@ -3,18 +3,21 @@ const JSON_LD_PAGE_ID = 'seo-jsonld-page';
 
 let defaults = {
   site_name: 'Praise U Lord',
-  description: 'Read the Bible, follow daily Mass guides, novenas, prayers, and Catholic feast days.',
-  keywords: 'bible, catholic, mass guide, novenas, prayers',
+  description: 'Your Catholic companion online — daily Mass guides, Bible readings, novenas, prayers, and the fiesta calendar.',
+  keywords: 'catholic bible, mass guide, daily readings, novenas, prayers, fiesta calendar, liturgy, devotionals, philippines',
   site_url: typeof window !== 'undefined' ? window.location.origin : '',
   og_image: null,
   twitter_site: null,
   locale: 'en',
+  home_headline: 'Mass Guide, Novenas, Prayers, Fiesta Calendar & Bible',
+  page_meta: {},
 };
 
 export function initSeoDefaults(config = {}) {
   defaults = {
     ...defaults,
     ...config,
+    page_meta: config.page_meta || defaults.page_meta || {},
     site_url: config.site_url || defaults.site_url || (typeof window !== 'undefined' ? window.location.origin : ''),
   };
 
@@ -79,15 +82,16 @@ export function applyRouteSeo(route, extra = {}) {
   const meta = route.meta || {};
   const isAdmin = route.path.startsWith('/admin');
   const siteName = defaults.site_name || 'Praise U Lord';
-  let title = meta.title || siteName;
+  const pageOverride = defaults.page_meta?.[route.name] || {};
+  let title = pageOverride.title || meta.title || siteName;
 
-  if (route.name === 'home') {
+  if (route.name === 'home' && !pageOverride.title) {
     title = 'Home';
   }
 
   const seoOptions = {
     title,
-    description: meta.description || defaults.description,
+    description: pageOverride.description || meta.description || defaults.description,
     type: meta.ogType || 'website',
     robots: isAdmin ? 'noindex, nofollow' : (meta.robots || undefined),
     url: typeof window !== 'undefined' ? `${window.location.origin}${route.fullPath.split('#')[0]}` : undefined,
@@ -96,7 +100,7 @@ export function applyRouteSeo(route, extra = {}) {
   };
 
   if (route.name === 'home') {
-    seoOptions.rawTitle = `${siteName} — Mass Guide, Novenas, Prayers & Bible`;
+    seoOptions.rawTitle = `${siteName} — ${defaults.home_headline || 'Mass Guide, Novenas, Prayers, Fiesta Calendar & Bible'}`;
   }
 
   return applySeo(seoOptions);

@@ -22,6 +22,7 @@ use App\Http\Controllers\Api\PrayerController;
 use App\Http\Controllers\Api\ProverbController;
 use App\Http\Controllers\Api\CaptchaController;
 use App\Http\Controllers\Api\PublicController;
+use App\Http\Controllers\Api\SeoSettingsController;
 use App\Http\Controllers\Api\SocialMediaSettingController;
 use App\Http\Controllers\Api\StaticPageController;
 use App\Http\Controllers\Api\SystemSettingController;
@@ -101,6 +102,8 @@ Route::prefix('auth')->group(function () {
 
 Route::middleware(['auth:sanctum', 'superadmin'])->group(function () {
     Route::get('dashboard', [DashboardController::class, 'index']);
+    Route::get('seo-settings', [SeoSettingsController::class, 'show']);
+    Route::post('seo-settings', [SeoSettingsController::class, 'update']);
 
     Route::get('advertisements/sales-report', [AdvertisementController::class, 'salesReport']);
 

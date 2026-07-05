@@ -21,6 +21,12 @@ class SeoService
 
     public const SETTING_KEYWORDS = 'seo_default_keywords';
 
+    public const SETTING_HOME_HEADLINE = 'seo_home_headline';
+
+    public const SETTING_PAGE_META = 'seo_page_meta';
+
+    public const DEFAULT_HOME_HEADLINE = 'Mass Guide, Novenas, Prayers, Fiesta Calendar & Bible';
+
     public const DEFAULT_OG_IMAGE = '/images/og-default.png';
 
     /**
@@ -28,12 +34,98 @@ class SeoService
      */
     public function defaults(): array
     {
-        return $this->buildMeta([
-            'title' => 'Home',
-            'description' => $this->defaultDescription(),
-            'path' => '/',
-            'route_key' => 'home',
-        ]);
+        return array_merge(
+            $this->buildMeta([
+                'title' => 'Home',
+                'description' => $this->defaultDescription(),
+                'path' => '/',
+                'route_key' => 'home',
+            ]),
+            $this->frontendConfig(),
+        );
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function frontendConfig(): array
+    {
+        return [
+            'home_headline' => $this->homeHeadline(),
+            'page_meta' => $this->pageMetaOverrides(),
+        ];
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function adminSettings(): array
+    {
+        $pageMeta = $this->pageMetaOverrides();
+        $pages = [];
+
+        foreach (PublicRouteSeo::routes() as $key => $route) {
+            $override = $pageMeta[$key] ?? [];
+            $pages[] = [
+                'key' => $key,
+                'label' => $route['title'],
+                'path' => $route['path'],
+                'title' => $override['title'] ?? $route['title'],
+                'description' => $override['description'] ?? $route['description'],
+                'default_title' => $route['title'],
+                'default_description' => $route['description'],
+                'managed_in_static_pages' => ! empty($route['static_slug']),
+            ];
+        }
+
+        return [
+            'site_name' => $this->siteName(),
+            'global' => [
+                'home_headline' => $this->homeHeadline(),
+                'default_description' => $this->defaultDescription(),
+                'keywords' => $this->setting(
+                    self::SETTING_KEYWORDS,
+                    'catholic bible, mass guide, daily readings, novenas, prayers, fiesta calendar, liturgy, devotionals, philippines'
+                ),
+                'og_image' => $this->setting(self::SETTING_OG_IMAGE, self::DEFAULT_OG_IMAGE),
+                'twitter_handle' => $this->setting(self::SETTING_TWITTER, ''),
+            ],
+            'pages' => $pages,
+        ];
+    }
+
+    /**
+     * @param  array<string, mixed>  $data
+     */
+    public function updateAdminSettings(array $data): void
+    {
+        $this->upsertSetting(self::SETTING_HOME_HEADLINE, trim((string) ($data['home_headline'] ?? '')), 'seo');
+        $this->upsertSetting(self::SETTING_DESCRIPTION, trim((string) ($data['default_description'] ?? '')), 'seo');
+        $this->upsertSetting(self::SETTING_KEYWORDS, trim((string) ($data['keywords'] ?? '')), 'seo');
+        $this->upsertSetting(self::SETTING_TWITTER, trim((string) ($data['twitter_handle'] ?? '')), 'seo');
+
+        if (! empty($data['og_image'])) {
+            $this->upsertSetting(self::SETTING_OG_IMAGE, trim((string) $data['og_image']), 'seo');
+        }
+
+        $pageMeta = [];
+        foreach (($data['page_meta'] ?? []) as $key => $values) {
+            if (! is_array($values)) {
+                continue;
+            }
+
+            $title = trim((string) ($values['title'] ?? ''));
+            $description = trim((string) ($values['description'] ?? ''));
+
+            if ($title !== '' || $description !== '') {
+                $pageMeta[$key] = array_filter([
+                    'title' => $title !== '' ? $title : null,
+                    'description' => $description !== '' ? $description : null,
+                ]);
+            }
+        }
+
+        $this->upsertSetting(self::SETTING_PAGE_META, json_encode($pageMeta, JSON_UNESCAPED_UNICODE), 'seo');
     }
 
     /**
@@ -89,6 +181,8 @@ class SeoService
                     $meta['description'] = $page->meta_description;
                 }
             }
+
+            $meta = $this->applyPageMetaOverride($route['key'], $meta);
 
             return $this->buildMeta($meta, $request);
         }
@@ -242,7 +336,7 @@ class SeoService
         $routeKey = $meta['route_key'] ?? null;
         $ogImage = $this->resolveOgImage($routeKey, $request);
         $canonical = $siteUrl.$path;
-        $fullTitle = $this->fullTitle($pageTitle, $siteName, $path);
+        $fullTitle = $this->fullTitle($pageTitle, $siteName, $path, $routeKey);
 
         return [
             'site_name' => $siteName,
@@ -265,10 +359,10 @@ class SeoService
         ];
     }
 
-    protected function fullTitle(string $pageTitle, string $siteName, string $path): string
+    protected function fullTitle(string $pageTitle, string $siteName, string $path, ?string $routeKey = null): string
     {
-        if ($path === '/' || $pageTitle === 'Home') {
-            return $siteName.' — Mass Guide, Novenas, Prayers & Bible';
+        if ($path === '/' || $routeKey === 'home' || $pageTitle === 'Home') {
+            return $siteName.' — '.$this->homeHeadline();
         }
 
         if ($pageTitle === $siteName) {
@@ -276,6 +370,50 @@ class SeoService
         }
 
         return $pageTitle.' | '.$siteName;
+    }
+
+    protected function homeHeadline(): string
+    {
+        return $this->setting(self::SETTING_HOME_HEADLINE, self::DEFAULT_HOME_HEADLINE)
+            ?? self::DEFAULT_HOME_HEADLINE;
+    }
+
+    /**
+     * @return array<string, array{title?: string, description?: string}>
+     */
+    protected function pageMetaOverrides(): array
+    {
+        $raw = $this->setting(self::SETTING_PAGE_META, '{}') ?? '{}';
+        $decoded = json_decode($raw, true);
+
+        return is_array($decoded) ? $decoded : [];
+    }
+
+    /**
+     * @param  array<string, mixed>  $meta
+     * @return array<string, mixed>
+     */
+    protected function applyPageMetaOverride(string $routeKey, array $meta): array
+    {
+        $override = $this->pageMetaOverrides()[$routeKey] ?? [];
+
+        if (! empty($override['title'])) {
+            $meta['title'] = $override['title'];
+        }
+
+        if (! empty($override['description'])) {
+            $meta['description'] = $override['description'];
+        }
+
+        return $meta;
+    }
+
+    protected function upsertSetting(string $key, string $value, string $group): void
+    {
+        SystemSetting::updateOrCreate(
+            ['key' => $key],
+            ['value' => $value, 'group' => $group],
+        );
     }
 
     protected function resolveOgImage(?string $routeKey, ?Request $request = null): string
@@ -321,8 +459,8 @@ class SeoService
 
         return $this->setting(
             self::SETTING_DESCRIPTION,
-            'Read the Bible, follow daily Mass guides, novenas, prayers, and Catholic feast days on '.$siteName.'.'
-        ) ?? 'Read the Bible, follow daily Mass guides, novenas, prayers, and Catholic feast days.';
+            'Your Catholic companion online — daily Mass guides, Bible readings, novenas, prayers, and the fiesta calendar for the Philippines and the world.'
+        ) ?? 'Your Catholic companion online — daily Mass guides, Bible readings, novenas, prayers, and the fiesta calendar.';
     }
 
     protected function siteBaseUrl(?Request $request = null): string

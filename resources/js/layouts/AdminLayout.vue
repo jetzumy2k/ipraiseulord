@@ -102,6 +102,7 @@ export default {
         {
           label: 'Settings',
           items: [
+            { to: '/admin/seo-settings', label: 'SEO Settings', icon: 'fas fa-search' },
             { to: '/admin/system-settings', label: 'System Settings', icon: 'fas fa-cog' },
             { to: '/admin/page-banners', label: 'Page Banners', icon: 'fas fa-image' },
             { to: '/admin/donation-settings', label: 'Donation Settings', icon: 'fas fa-hand-holding-heart' },
