@@ -54,6 +54,7 @@ Route::prefix('public')->group(function () {
     Route::get('settings', [PublicController::class, 'settings']);
     Route::get('banners', [PublicController::class, 'pageBanners']);
     Route::get('pages', [PublicController::class, 'staticPages']);
+    Route::get('pages/route/{route}', [PublicController::class, 'staticPageByRoute']);
     Route::get('pages/{slug}', [PublicController::class, 'staticPage']);
     Route::post('visits', [PublicController::class, 'trackVisit']);
     Route::post('contact', [PublicController::class, 'submitContact']);
@@ -134,6 +135,10 @@ Route::middleware(['auth:sanctum', 'superadmin'])->group(function () {
             Route::get("{$uri}/status", [$controller, 'status']);
             Route::post("{$uri}/toggle-global", [$controller, 'toggleGlobal']);
             Route::post("{$uri}/bulk-active", [$controller, 'bulkActive']);
+        }
+
+        if ($uri === 'static-pages') {
+            Route::get("{$uri}/page-routes", [$controller, 'pageRoutes']);
         }
 
         Route::apiResource($uri, $controller);

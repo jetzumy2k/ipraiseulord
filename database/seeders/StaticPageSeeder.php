@@ -141,10 +141,97 @@ HTML,
             ],
         ];
 
-        foreach ($pages as $page) {
+        $pageSections = [
+            [
+                'slug' => 'home',
+                'page_route' => 'home',
+                'title' => 'Welcome',
+                'meta_description' => 'Welcome to Praise U Lord — daily scripture, prayer, and Catholic devotion.',
+                'content' => <<<'HTML'
+<p class="lead">A place for daily scripture, prayer, and Catholic devotion — inspired by the beauty of sacred reading.</p>
+HTML,
+            ],
+            [
+                'slug' => 'donate',
+                'page_route' => 'donate',
+                'title' => 'Donate',
+                'meta_description' => 'Support Praise U Lord and help us share the Gospel through Bible reading and Catholic faith resources.',
+                'content' => <<<'HTML'
+<p class="lead">Your generosity helps us share the Gospel and maintain this ministry.</p>
+<p>Choose a donation method below. If you give via bank transfer or e-wallet, you may email your receipt so we can acknowledge your gift.</p>
+HTML,
+            ],
+            [
+                'slug' => 'contact',
+                'page_route' => 'contact',
+                'title' => 'Contact Us',
+                'meta_description' => 'Get in touch with the Praise U Lord team for questions, feedback, and support.',
+                'content' => <<<'HTML'
+<p class="lead">We would love to hear from you.</p>
+<p>Send us your questions, prayer intentions, feedback, or suggestions using the form below. We aim to respond within 2–3 business days.</p>
+HTML,
+            ],
+            [
+                'slug' => 'bible',
+                'page_route' => 'bible',
+                'title' => 'Holy Bible',
+                'meta_description' => 'Read the complete Holy Bible online in many languages and translations.',
+                'content' => <<<'HTML'
+<p class="text-muted">Read Scripture in the translation and language of your choice.</p>
+HTML,
+            ],
+            [
+                'slug' => 'mass-guide',
+                'page_route' => 'mass-guide',
+                'title' => 'Mass Guide',
+                'meta_description' => 'Follow the full order of Mass with priest and people responses, daily readings, and liturgical feast information.',
+                'content' => <<<'HTML'
+<p class="text-muted mb-0">Full order of Mass with priest and people responses.</p>
+HTML,
+            ],
+            [
+                'slug' => 'fiesta-calendar',
+                'page_route' => 'fiesta-calendar',
+                'title' => 'Fiesta Calendar',
+                'meta_description' => 'Browse Catholic feast days for Jesus Christ, the Holy Trinity, Mary, saints, and angels throughout the year.',
+                'content' => <<<'HTML'
+<p class="text-muted mb-0">Feast days of Jesus Christ, the Holy Trinity, Mary, the saints, and the angels.</p>
+HTML,
+            ],
+            [
+                'slug' => 'novenas',
+                'page_route' => 'novenas',
+                'title' => 'Novenas',
+                'meta_description' => 'Nine-day Catholic novenas with leader and congregation responses for popular devotions and patron saints.',
+                'content' => <<<'HTML'
+<p class="text-muted">Nine days of prayer and devotion.</p>
+HTML,
+            ],
+            [
+                'slug' => 'prayers',
+                'page_route' => 'prayers',
+                'title' => 'Prayers',
+                'meta_description' => 'Traditional and common Catholic prayers for daily devotion, worship, and spiritual growth.',
+                'content' => <<<'HTML'
+<p class="text-muted">Traditional and daily prayers for every occasion.</p>
+HTML,
+            ],
+            [
+                'slug' => 'ai-advice',
+                'page_route' => 'ai-advice',
+                'title' => 'AI Spiritual Advice',
+                'meta_description' => 'Ask faith questions and receive answers grounded in Bible verses and Catholic teaching.',
+                'content' => <<<'HTML'
+<p class="text-muted">Ask a question and receive guidance rooted in scripture.</p>
+HTML,
+            ],
+        ];
+
+        foreach (array_merge($pages, $pageSections) as $page) {
             StaticPage::updateOrCreate(
                 ['slug' => $page['slug']],
                 [
+                    'page_route' => $page['page_route'] ?? null,
                     'title' => $page['title'],
                     'content' => $page['content'],
                     'meta_description' => $page['meta_description'],

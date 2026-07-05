@@ -1,6 +1,6 @@
 <template>
   <div class="public-page bible-page">
-    <h1 class="page-title">Holy Bible</h1>
+    <PageStaticHeader default-title="Holy Bible" update-seo />
 
     <div v-if="loading" class="text-center py-5">
       <i class="fas fa-spinner fa-spin fa-2x" />
@@ -81,8 +81,11 @@
 </template>
 
 <script>
+import PageStaticHeader from '../../components/shared/PageStaticHeader.vue';
+
 export default {
   name: 'BiblePage',
+  components: { PageStaticHeader },
   data() {
     return {
       languages: [],

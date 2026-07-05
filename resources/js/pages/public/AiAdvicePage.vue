@@ -1,7 +1,10 @@
 <template>
   <div class="public-page">
-    <h1 class="page-title">AI Spiritual Advice</h1>
-    <p class="text-muted">Ask a question and receive guidance rooted in scripture.</p>
+    <PageStaticHeader
+      default-title="AI Spiritual Advice"
+      default-intro="Ask a question and receive guidance rooted in scripture."
+      update-seo
+    />
 
     <form class="content-card mb-4" @submit.prevent="ask">
       <div class="mb-3">
@@ -61,10 +64,12 @@
 </template>
 
 <script>
+import PageStaticHeader from '../../components/shared/PageStaticHeader.vue';
 import { useVisitor } from '../../composables/useVisitor';
 
 export default {
   name: 'AiAdvicePage',
+  components: { PageStaticHeader },
   data() {
     return {
       question: '',

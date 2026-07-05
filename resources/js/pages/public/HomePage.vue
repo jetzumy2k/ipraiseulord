@@ -1,9 +1,10 @@
 <template>
   <div class="public-page home-page">
-    <h1 class="page-title">Welcome</h1>
-    <p class="lead">
-      A place for daily scripture, prayer, and Catholic devotion — inspired by the beauty of sacred reading.
-    </p>
+    <PageStaticHeader
+      default-title="Welcome"
+      default-intro="A place for daily scripture, prayer, and Catholic devotion — inspired by the beauty of sacred reading."
+      update-seo
+    />
 
     <div class="row g-3 mt-2">
       <div v-for="card in featureCards" :key="card.to" class="col-md-6">
@@ -28,8 +29,11 @@
 </template>
 
 <script>
+import PageStaticHeader from '../../components/shared/PageStaticHeader.vue';
+
 export default {
   name: 'HomePage',
+  components: { PageStaticHeader },
   data() {
     return {
       massGuide: null,

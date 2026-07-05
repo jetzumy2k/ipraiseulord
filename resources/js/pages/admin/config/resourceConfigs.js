@@ -21,6 +21,19 @@ const donationDisplayLocations = [
   { value: 'donation_page', label: 'Donate Page' },
 ];
 
+const staticPageRoutes = [
+  { value: '', label: 'None (standalone page)' },
+  { value: 'home', label: 'Home' },
+  { value: 'donate', label: 'Donate' },
+  { value: 'contact', label: 'Contact' },
+  { value: 'bible', label: 'Holy Bible' },
+  { value: 'mass-guide', label: 'Mass Guide' },
+  { value: 'fiesta-calendar', label: 'Fiesta Calendar' },
+  { value: 'novenas', label: 'Novenas' },
+  { value: 'prayers', label: 'Prayers' },
+  { value: 'ai-advice', label: 'AI Advice' },
+];
+
 const pageBannerRoutes = [
   { value: 'home', label: 'Home' },
   { value: 'bible', label: 'Holy Bible' },
@@ -732,20 +745,32 @@ export const resourceConfigs = {
     columns: [
       { key: 'title', label: 'Title' },
       { key: 'slug', label: 'Slug' },
+      { key: 'page_route', label: 'Linked Page' },
       { key: 'is_published', label: 'Published', format: 'boolean' },
     ],
-    filters: [{ key: 'is_published', label: 'Published', options: yesNo }],
+    filters: [
+      { key: 'is_published', label: 'Published', options: yesNo },
+      { key: 'page_route', label: 'Linked Page', options: staticPageRoutes.filter((option) => option.value) },
+    ],
     formFields: [
-      { key: 'title', label: 'Title', required: true, col: 'col-md-8' },
-      { key: 'slug', label: 'Slug', required: true, col: 'col-md-4' },
-      { key: 'is_published', label: 'Published', type: 'boolean', col: 'col-md-4' },
-      { key: 'meta_description', label: 'Meta Description', col: 'col-md-8' },
+      { key: 'title', label: 'Title', required: true, col: 'col-md-6' },
+      { key: 'slug', label: 'Slug', required: true, col: 'col-md-6', help: 'URL slug for standalone pages (e.g. about-us).' },
+      {
+        key: 'page_route',
+        label: 'Linked Site Page',
+        type: 'select',
+        col: 'col-md-6',
+        options: staticPageRoutes,
+        help: 'Optional. Links this content to a site page header (Donate, Contact, Home, etc.). Leave empty for full standalone pages like About Us.',
+      },
+      { key: 'is_published', label: 'Published', type: 'boolean', col: 'col-md-6' },
+      { key: 'meta_description', label: 'Meta Description', col: 'col-12' },
       {
         key: 'content',
         label: 'Page Content',
         type: 'page-builder',
         col: 'col-12',
-        help: 'Build your page with blocks, similar to WordPress.',
+        help: 'Intro text and blocks shown on the page. For linked pages, this appears above dynamic content (donation options, contact form, listings, etc.).',
       },
     ],
   },

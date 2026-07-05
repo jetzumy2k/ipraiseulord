@@ -1,7 +1,10 @@
 <template>
   <div class="public-page">
-    <h1 class="page-title">Prayers</h1>
-    <p class="text-muted">Traditional and daily prayers for every occasion.</p>
+    <PageStaticHeader
+      default-title="Prayers"
+      default-intro="Traditional and daily prayers for every occasion."
+      update-seo
+    />
 
     <div class="mb-3">
       <select v-model="category" class="form-select form-select-sm" style="max-width: 220px;">
@@ -27,8 +30,11 @@
 </template>
 
 <script>
+import PageStaticHeader from '../../components/shared/PageStaticHeader.vue';
+
 export default {
   name: 'PrayersPage',
+  components: { PageStaticHeader },
   data() {
     return {
       prayers: [],

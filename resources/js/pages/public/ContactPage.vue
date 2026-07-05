@@ -1,7 +1,10 @@
 <template>
   <div class="public-page">
-    <h1 class="page-title">Contact Us</h1>
-    <p class="text-muted">We would love to hear from you.</p>
+    <PageStaticHeader
+      default-title="Contact Us"
+      default-intro="We would love to hear from you."
+      update-seo
+    />
 
     <form class="content-card" @submit.prevent="submit">
       <div v-if="success" class="alert alert-success">{{ success }}</div>
@@ -32,8 +35,11 @@
 </template>
 
 <script>
+import PageStaticHeader from '../../components/shared/PageStaticHeader.vue';
+
 export default {
   name: 'ContactPage',
+  components: { PageStaticHeader },
   data() {
     return {
       form: { name: '', email: '', subject: '', message: '' },

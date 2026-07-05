@@ -983,6 +983,29 @@
   color: rgba(0, 0, 0, 0.78);
 }
 
+.public-site .page-static-header {
+  margin-bottom: 1.25rem;
+}
+
+.public-site .page-static-header--compact {
+  margin-bottom: 0.75rem;
+}
+
+.public-site .page-static-header .page-intro :last-child {
+  margin-bottom: 0;
+}
+
+.public-site .page-intro-fallback {
+  margin-bottom: 0;
+  line-height: 1.75;
+}
+
+.public-site .page-intro-fallback.lead,
+.public-site .page-static-header .lead {
+  font-size: 1.15rem;
+  color: rgba(0, 0, 0, 0.72);
+}
+
 .public-site .static-content .page-paragraph,
 .public-site .static-content p {
   margin-bottom: 1rem;

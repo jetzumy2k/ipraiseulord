@@ -1,7 +1,10 @@
 <template>
   <div class="public-page">
-    <h1 class="page-title">Novenas</h1>
-    <p class="text-muted">Nine days of prayer and devotion.</p>
+    <PageStaticHeader
+      default-title="Novenas"
+      default-intro="Nine days of prayer and devotion."
+      update-seo
+    />
 
     <div v-if="loading" class="text-center py-5">
       <i class="fas fa-spinner fa-spin fa-2x" />
@@ -20,8 +23,11 @@
 </template>
 
 <script>
+import PageStaticHeader from '../../components/shared/PageStaticHeader.vue';
+
 export default {
   name: 'NovenasPage',
+  components: { PageStaticHeader },
   data() {
     return {
       novenas: [],

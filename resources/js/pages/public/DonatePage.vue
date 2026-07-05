@@ -1,7 +1,10 @@
 <template>
   <div class="public-page donate-page">
-    <h1 class="page-title">Donate</h1>
-    <p class="lead">Your generosity helps us share the Gospel and maintain this ministry.</p>
+    <PageStaticHeader
+      default-title="Donate"
+      default-intro="Your generosity helps us share the Gospel and maintain this ministry."
+      update-seo
+    />
 
     <div v-if="loading" class="text-center py-5">
       <i class="fas fa-spinner fa-spin fa-2x" />
@@ -51,8 +54,11 @@
 </template>
 
 <script>
+import PageStaticHeader from '../../components/shared/PageStaticHeader.vue';
+
 export default {
   name: 'DonatePage',
+  components: { PageStaticHeader },
   data() {
     return {
       allDonations: [],

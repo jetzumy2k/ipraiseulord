@@ -1,10 +1,16 @@
 <template>
   <div class="public-page">
-    <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-2">
-      <div>
-        <h1 class="page-title mb-1">Mass Guide</h1>
-        <p class="text-muted mb-0">Full order of Mass with priest and people responses.</p>
-      </div>
+    <PageStaticHeader
+      route-name="mass-guide"
+      default-title="Mass Guide"
+      default-intro="Full order of Mass with priest and people responses."
+      title-class="mb-1"
+      intro-class="text-muted mb-0"
+      compact
+      update-seo
+    />
+
+    <div class="d-flex flex-wrap align-items-center justify-content-end gap-3 mb-2">
       <div class="mass-guide-nav">
         <button
           type="button"
@@ -111,6 +117,7 @@
 </template>
 
 <script>
+import PageStaticHeader from '../../components/shared/PageStaticHeader.vue';
 import SocialShareBar from '../../components/shared/SocialShareBar.vue';
 import { applySeo, buildWebPageJsonLd } from '../../utils/seo';
 
@@ -130,7 +137,7 @@ function normalizeIsoDate(date) {
 
 export default {
   name: 'MassGuidePage',
-  components: { SocialShareBar },
+  components: { PageStaticHeader, SocialShareBar },
   data() {
     return {
       mass: null,

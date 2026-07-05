@@ -181,7 +181,7 @@ class PublicController extends Controller
         $pages = StaticPage::query()
             ->where('is_published', true)
             ->orderBy('title')
-            ->get(['id', 'slug', 'title', 'meta_description']);
+            ->get(['id', 'slug', 'page_route', 'title', 'meta_description']);
 
         return response()->json($pages);
     }
@@ -192,6 +192,24 @@ class PublicController extends Controller
             ->where('slug', $slug)
             ->where('is_published', true)
             ->firstOrFail();
+
+        return response()->json($page);
+    }
+
+    public function staticPageByRoute(string $route): JsonResponse
+    {
+        if (! \App\Support\PageRoutes::isValid($route)) {
+            return response()->json(['message' => 'Invalid page route.'], 422);
+        }
+
+        $page = StaticPage::query()
+            ->where('page_route', $route)
+            ->where('is_published', true)
+            ->first();
+
+        if (! $page) {
+            return response()->json(['message' => 'Page content not found.'], 404);
+        }
 
         return response()->json($page);
     }

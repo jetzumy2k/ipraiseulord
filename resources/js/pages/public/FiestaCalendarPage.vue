@@ -1,12 +1,16 @@
 <template>
   <div class="public-page fiesta-page">
-    <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-3">
-      <div>
-        <h1 class="page-title mb-1">Fiesta Calendar</h1>
-        <p class="text-muted mb-0">
-          Feast days of Jesus Christ, the Holy Trinity, Mary, the saints, and the angels.
-        </p>
-      </div>
+    <PageStaticHeader
+      route-name="fiesta-calendar"
+      default-title="Fiesta Calendar"
+      default-intro="Feast days of Jesus Christ, the Holy Trinity, Mary, the saints, and the angels."
+      title-class="mb-1"
+      intro-class="text-muted mb-0"
+      compact
+      update-seo
+    />
+
+    <div class="d-flex flex-wrap align-items-center justify-content-end gap-3 mb-3">
       <div class="fiesta-nav">
         <button type="button" class="btn btn-sm btn-outline-primary" @click="prevMonth">
           <i class="fas fa-chevron-left" />
@@ -114,6 +118,8 @@
 </template>
 
 <script>
+import PageStaticHeader from '../../components/shared/PageStaticHeader.vue';
+
 const monthNames = [
   'January', 'February', 'March', 'April', 'May', 'June',
   'July', 'August', 'September', 'October', 'November', 'December',
@@ -121,6 +127,7 @@ const monthNames = [
 
 export default {
   name: 'FiestaCalendarPage',
+  components: { PageStaticHeader },
   data() {
     const today = new Date();
 
