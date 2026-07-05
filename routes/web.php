@@ -19,6 +19,6 @@ Route::get('/install/{any?}', function () {
 
 Route::get('/{any?}', function () {
     return view('app', [
-        'seo' => app(SeoService::class)->defaults(),
+        'seo' => app(SeoService::class)->forRequest(request()),
     ]);
 })->where('any', '.*');

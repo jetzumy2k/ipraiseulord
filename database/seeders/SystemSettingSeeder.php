@@ -19,7 +19,7 @@ class SystemSettingSeeder extends Seeder
             ['key' => 'donations_enabled', 'value' => 'true', 'group' => 'donations'],
             ['key' => 'seo_default_description', 'value' => 'Read the Bible, follow daily Mass guides, novenas, prayers, and Catholic feast days on Praise U Lord.', 'group' => 'seo'],
             ['key' => 'seo_default_keywords', 'value' => 'bible, catholic, mass guide, novenas, prayers, fiesta calendar, scripture, devotionals', 'group' => 'seo'],
-            ['key' => 'seo_og_image', 'value' => '', 'group' => 'seo'],
+            ['key' => 'seo_og_image', 'value' => '/images/og-default.png', 'group' => 'seo'],
             ['key' => 'seo_twitter_handle', 'value' => '', 'group' => 'seo'],
         ];
 

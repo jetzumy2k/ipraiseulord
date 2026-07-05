@@ -78,16 +78,28 @@ export function applySeo(options = {}) {
 export function applyRouteSeo(route, extra = {}) {
   const meta = route.meta || {};
   const isAdmin = route.path.startsWith('/admin');
+  const siteName = defaults.site_name || 'Praise U Lord';
+  let title = meta.title || siteName;
 
-  return applySeo({
-    title: meta.title || defaults.site_name,
+  if (route.name === 'home') {
+    title = 'Home';
+  }
+
+  const seoOptions = {
+    title,
     description: meta.description || defaults.description,
     type: meta.ogType || 'website',
     robots: isAdmin ? 'noindex, nofollow' : (meta.robots || undefined),
     url: typeof window !== 'undefined' ? `${window.location.origin}${route.fullPath.split('#')[0]}` : undefined,
     jsonLd: meta.jsonLd,
     ...extra,
-  });
+  };
+
+  if (route.name === 'home') {
+    seoOptions.rawTitle = `${siteName} — Mass Guide, Novenas, Prayers & Bible`;
+  }
+
+  return applySeo(seoOptions);
 }
 
 export function buildWebPageJsonLd({ title, description, url, breadcrumbs = [] }) {
