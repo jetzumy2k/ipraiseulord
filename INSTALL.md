@@ -531,6 +531,25 @@ npm run install:server
 npm run build
 ```
 
+### LiteSpeed or cPanel shows “404 Not Found” at `/install`
+
+If the error page says **“Proudly powered by LiteSpeed Web Server”** (not a Laravel page), the request never reached the app. Fix the server setup:
+
+1. **Set document root to `public/`** (recommended)  
+   cPanel → **Domains** → your domain → **Document Root** →  
+   `/home/username/praise-u-lord/public`
+
+2. **If you cannot change document root**, upload the project so `public/` contents live in `public_html/`, and edit `public_html/index.php` paths as described in [Step 4 — Point domain to `public/`](#step-4--point-domain-to-public).
+
+3. **Enable URL rewriting**  
+   - cPanel → **MultiPHP INI Editor** or **Select PHP Version** → ensure `.htaccess` / mod_rewrite is allowed  
+   - The repo includes a root `.htaccess` that forwards requests to `public/` when the document root is the project folder
+
+4. **Verify Laravel is responding**  
+   Visit `https://yourdomain.com/up` — you should see `{"status":"ok"}` or similar, not a LiteSpeed 404.
+
+5. **Upload required files** — ensure `vendor/`, `.env` (or `.env.example`), and `public/build/` are on the server after `composer install` and `npm run build`.
+
 ### Redirect loop or blank page at `/install`
 
 - Confirm `storage/` and `bootstrap/cache/` are writable

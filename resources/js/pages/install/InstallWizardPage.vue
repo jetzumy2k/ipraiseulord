@@ -271,7 +271,7 @@
 </template>
 
 <script>
-import axios from 'axios';
+import axios from '../../bootstrap';
 
 const StatusBadge = {
   name: 'StatusBadge',
