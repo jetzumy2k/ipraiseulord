@@ -200,6 +200,8 @@ class InstallerService
 
             Artisan::call('key:generate', ['--force' => true]);
             Artisan::call('migrate', ['--force' => true]);
+            $this->enableProductionDrivers();
+            $this->refreshApplicationConfig();
             Artisan::call('db:seed', ['--force' => true]);
 
             $this->createLockFile($data);
@@ -253,8 +255,9 @@ class InstallerService
             'DB_USERNAME' => $db['username'],
             'DB_PASSWORD' => $this->wrapEnvValue($db['password'] ?? ''),
             'SANCTUM_STATEFUL_DOMAINS' => implode(',', $sanctumDomains),
-            'SESSION_DRIVER' => 'database',
-            'CACHE_STORE' => 'database',
+            'SESSION_DRIVER' => 'file',
+            'CACHE_STORE' => 'file',
+            'QUEUE_CONNECTION' => 'sync',
         ];
 
         $env = File::get(base_path('.env'));
@@ -315,6 +318,36 @@ class InstallerService
             'app_url' => $data['site']['url'],
             'admin_email' => $data['admin']['email'],
         ], JSON_PRETTY_PRINT));
+    }
+
+    protected function enableProductionDrivers(): void
+    {
+        $this->replaceEnvValues([
+            'SESSION_DRIVER' => 'database',
+            'CACHE_STORE' => 'database',
+            'QUEUE_CONNECTION' => 'database',
+        ]);
+    }
+
+    /**
+     * @param  array<string, string>  $updates
+     */
+    protected function replaceEnvValues(array $updates): void
+    {
+        $env = File::get(base_path('.env'));
+
+        foreach ($updates as $key => $value) {
+            $pattern = '/^'.preg_quote($key, '/').'=.*$/m';
+            $line = "{$key}={$value}";
+
+            if (preg_match($pattern, $env)) {
+                $env = preg_replace($pattern, $line, $env);
+            } else {
+                $env .= "\n{$line}";
+            }
+        }
+
+        File::put(base_path('.env'), $env);
     }
 
     protected function finalizeInstallation(): void

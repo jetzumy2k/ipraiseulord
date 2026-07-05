@@ -531,6 +531,24 @@ npm run install:server
 npm run build
 ```
 
+### `cache` table not found when running Artisan
+
+Your `.env` has `CACHE_STORE=database` but migrations have not finished yet. Edit `.env` temporarily:
+
+```env
+CACHE_STORE=file
+QUEUE_CONNECTION=sync
+SESSION_DRIVER=file
+```
+
+Then run:
+
+```bash
+php artisan optimize:clear
+```
+
+After a successful install, the wizard switches these back to `database` automatically.
+
 ### “Specified key was too long” during installation
 
 Older MySQL/MariaDB on cPanel limits index size with `utf8mb4`. This project sets `Schema::defaultStringLength(191)` for single-column indexes and shortens columns used in **composite** indexes (e.g. `failed_jobs`, `fiestas`).

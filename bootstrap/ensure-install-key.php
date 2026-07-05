@@ -37,10 +37,18 @@ if (! preg_match('/^APP_KEY=(.+)$/m', $env, $matches) || trim($matches[1], " \t\
     $changed = true;
 }
 
-// Database-backed sessions need the sessions table, which is created during install.
-if (preg_match('/^SESSION_DRIVER=database\s*$/m', $env)) {
-    $env = preg_replace('/^SESSION_DRIVER=database\s*$/m', 'SESSION_DRIVER=file', $env);
-    $changed = true;
+// Database-backed drivers need tables that are created during install.
+$preInstallDrivers = [
+    'SESSION_DRIVER' => ['database', 'file'],
+    'CACHE_STORE' => ['database', 'file'],
+    'QUEUE_CONNECTION' => ['database', 'sync'],
+];
+
+foreach ($preInstallDrivers as $key => [$from, $to]) {
+    if (preg_match('/^'.preg_quote($key, '/').'='.preg_quote($from, '/').'\s*$/m', $env)) {
+        $env = preg_replace('/^'.preg_quote($key, '/').'=.*$/m', "{$key}={$to}", $env);
+        $changed = true;
+    }
 }
 
 if ($changed) {
