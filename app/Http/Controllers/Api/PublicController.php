@@ -25,6 +25,7 @@ use App\Services\MassOrderService;
 use App\Services\NovenaGuideService;
 use App\Services\RandomBibleVerseService;
 use App\Services\SeoService;
+use App\Services\WeatherService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -169,6 +170,9 @@ class PublicController extends Controller
             'donations_enabled' => DonationSettingsService::isGloballyEnabled(),
             'donations' => DonationSettingsService::publicDonations(),
             'seo' => app(SeoService::class)->defaults(),
+            'weather' => [
+                'temperature' => app(WeatherService::class)->getDisplayTemperature(),
+            ],
         ]);
     }
 

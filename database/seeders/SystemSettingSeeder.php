@@ -15,6 +15,7 @@ class SystemSettingSeeder extends Seeder
             ['key' => 'footer_color', 'value' => '#2d3748', 'group' => 'appearance'],
             ['key' => 'show_date', 'value' => 'true', 'group' => 'display'],
             ['key' => 'show_temperature', 'value' => 'true', 'group' => 'display'],
+            ['key' => 'weather_city', 'value' => 'Manila', 'group' => 'display'],
             ['key' => 'donations_enabled', 'value' => 'true', 'group' => 'donations'],
             ['key' => 'seo_default_description', 'value' => 'Read the Bible, follow daily Mass guides, novenas, prayers, and Catholic feast days on Praise U Lord.', 'group' => 'seo'],
             ['key' => 'seo_default_keywords', 'value' => 'bible, catholic, mass guide, novenas, prayers, fiesta calendar, scripture, devotionals', 'group' => 'seo'],

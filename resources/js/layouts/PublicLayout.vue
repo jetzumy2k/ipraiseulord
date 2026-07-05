@@ -5,8 +5,8 @@
         <div class="container d-flex justify-content-between align-items-center py-2">
           <div class="header-meta">
             <span v-if="showDate">{{ formattedDate }}</span>
-            <span v-if="showDate && showTemperature" class="mx-2">|</span>
-            <span v-if="showTemperature">{{ temperature }}</span>
+            <span v-if="showDate && showTemperature && temperature" class="mx-2">|</span>
+            <span v-if="showTemperature && temperature">{{ temperature }}</span>
           </div>
           <router-link to="/admin/login" class="admin-link">Admin</router-link>
         </div>
@@ -154,7 +154,17 @@ export default {
       return this.getSetting('show_temperature', 'true') === 'true';
     },
     temperature() {
-      return this.getSetting('temperature', '— °C');
+      const live = this.settings?.weather?.temperature;
+      if (live) {
+        return live;
+      }
+
+      const manual = this.getSetting('temperature', '');
+      if (manual && !manual.includes('—')) {
+        return manual;
+      }
+
+      return null;
     },
     formattedDate() {
       return new Date().toLocaleDateString(undefined, {
