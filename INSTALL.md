@@ -521,6 +521,16 @@ npm run build
 
 Deprecation warnings (lodash, bootstrap 4, etc.) are safe to ignore — they come from AdminLTE dependencies and do not block the build.
 
+### “Failed to resolve import @popperjs/core” during `npm run build`
+
+Bootstrap 5 requires `@popperjs/core` for dropdowns, modals, and tooltips. It is listed as a direct dependency in this project. If you see this error on cPanel, pull the latest `package.json` and reinstall:
+
+```bash
+cd ~/ipraiseulord
+npm run install:server
+npm run build
+```
+
 ### Redirect loop or blank page at `/install`
 
 - Confirm `storage/` and `bootstrap/cache/` are writable
