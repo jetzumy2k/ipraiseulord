@@ -48,9 +48,19 @@ class DonationSettingsService
             return collect();
         }
 
-        return DonationSetting::query()
+        $donations = DonationSetting::query()
             ->where('is_active', true)
             ->orderBy('sort_order')
             ->get();
+
+        return $donations->each(function (DonationSetting $donation): void {
+            if (! $donation->qr_code_path) {
+                return;
+            }
+
+            $donation->account_number = null;
+            $donation->ewallet_number = null;
+            $donation->paypal_email = null;
+        });
     }
 }

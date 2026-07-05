@@ -6,11 +6,21 @@
       <strong>{{ item.label }}</strong>
       <p v-if="item.type === 'bank'" class="mb-1 small">
         {{ item.bank_name }}<br>
-        {{ item.account_name }} — {{ item.account_number }}
+        <template v-if="item.account_number">
+          {{ item.account_name }} — {{ item.account_number }}
+        </template>
+        <template v-else>
+          {{ item.account_name }}
+        </template>
       </p>
-      <p v-else-if="item.type === 'paypal'" class="mb-1 small">{{ item.paypal_email }}</p>
+      <p v-else-if="item.type === 'paypal' && item.paypal_email" class="mb-1 small">{{ item.paypal_email }}</p>
       <p v-else-if="item.type === 'ewallet'" class="mb-1 small">
-        {{ item.ewallet_provider }} — {{ item.ewallet_number }}
+        <template v-if="item.ewallet_number">
+          {{ item.ewallet_provider }} — {{ item.ewallet_number }}
+        </template>
+        <template v-else>
+          {{ item.ewallet_provider }}
+        </template>
       </p>
       <div v-if="item.qr_code_path" class="donation-qr">
         <img :src="item.qr_code_path" :alt="`${item.label} QR code`" class="donation-qr-img">

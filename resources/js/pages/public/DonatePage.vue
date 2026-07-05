@@ -20,13 +20,16 @@
               <template v-if="item.type === 'bank'">
                 <p><strong>Bank:</strong> {{ item.bank_name }}</p>
                 <p><strong>Account Name:</strong> {{ item.account_name }}</p>
-                <p><strong>Account Number:</strong> {{ item.account_number }}</p>
+                <p v-if="item.account_number"><strong>Account Number:</strong> {{ item.account_number }}</p>
               </template>
               <template v-else-if="item.type === 'paypal'">
-                <p><strong>PayPal:</strong> {{ item.paypal_email }}</p>
+                <p v-if="item.paypal_email"><strong>PayPal:</strong> {{ item.paypal_email }}</p>
               </template>
               <template v-else-if="item.type === 'ewallet'">
-                <p><strong>{{ item.ewallet_provider }}:</strong> {{ item.ewallet_number }}</p>
+                <p>
+                  <strong>{{ item.ewallet_provider }}:</strong>
+                  <span v-if="item.ewallet_number">{{ item.ewallet_number }}</span>
+                </p>
               </template>
               <div
                 v-if="item.instructions"
