@@ -467,6 +467,28 @@ php artisan bible:import-text
 
 ## Troubleshooting
 
+### “npm ERESOLVE” or bootstrap peer dependency warnings
+
+`admin-lte` pulls in older packages (`bootstrap-switch`) that expect Bootstrap 3, while this project uses Bootstrap 5. The repo includes an `.npmrc` with `legacy-peer-deps=true` and `package.json` overrides so `npm install` works on shared hosting.
+
+On your server:
+
+```bash
+cd ~/ipraiseulord   # your project folder
+rm -rf node_modules
+npm install
+npm run build
+```
+
+If you still see errors, run explicitly:
+
+```bash
+npm install --legacy-peer-deps
+npm run build
+```
+
+Deprecation warnings (lodash, bootstrap 4, etc.) are safe to ignore — they come from AdminLTE dependencies and do not block the build.
+
 ### Redirect loop or blank page at `/install`
 
 - Confirm `storage/` and `bootstrap/cache/` are writable
