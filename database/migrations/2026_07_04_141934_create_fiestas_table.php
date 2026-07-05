@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::create('fiestas', function (Blueprint $table) {
             $table->id();
-            $table->string('title', 120);
+            $table->string('title', 100);
             $table->unsignedTinyInteger('month')->nullable();
             $table->unsignedTinyInteger('day')->nullable();
             $table->string('category');
@@ -25,7 +25,7 @@ return new class extends Migration
             $table->softDeletes();
 
             $table->unique(['month', 'day', 'title']);
-            $table->unique(['movable_rule', 'title']);
+            $table->unique(['movable_rule', 'title'], 'fiestas_movable_title_unique');
         });
     }
 

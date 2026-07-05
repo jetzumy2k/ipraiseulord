@@ -12,7 +12,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        // Must run before migrations on shared hosting (utf8mb4 index limit ~1000 bytes).
+        Schema::defaultStringLength(100);
     }
 
     /**
@@ -20,7 +21,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // Shared hosting MySQL/MariaDB often limits utf8mb4 index keys to 767–1000 bytes.
-        Schema::defaultStringLength(191);
+        //
     }
 }

@@ -551,17 +551,33 @@ After a successful install, the wizard switches these back to `database` automat
 
 ### “Specified key was too long” during installation
 
-Older MySQL/MariaDB on cPanel limits index size with `utf8mb4`. This project sets `Schema::defaultStringLength(191)` for single-column indexes and shortens columns used in **composite** indexes (e.g. `failed_jobs`, `fiestas`).
+Older MySQL/MariaDB on cPanel limits `utf8mb4` index size to about **1000 bytes**. This project:
 
-If a previous install attempt failed partway through:
+- Sets `Schema::defaultStringLength(100)` in `AppServiceProvider`
+- Uses explicit column lengths in default Laravel migrations
+- Removes the composite index on `failed_jobs` (the usual failure point)
 
-1. In cPanel → **phpMyAdmin**, drop **all tables** in your database (or delete and recreate the database).
-2. Remove the install lock:
-   ```bash
-   rm storage/app/installed.lock
-   ```
-3. Upload the latest migration files and `app/Providers/AppServiceProvider.php`.
-4. Run the wizard again at `/install`.
+**Before re-running migrations**, confirm the server has the updated files — especially:
+
+- `app/Providers/AppServiceProvider.php`
+- `database/migrations/0001_01_01_000002_create_jobs_table.php`
+
+In cPanel Terminal, verify the composite index was removed:
+
+```bash
+grep -n "failed_jobs_connection_queue" database/migrations/0001_01_01_000002_create_jobs_table.php
+```
+
+That command should return **nothing**. If it still shows a line, upload the latest migration file again.
+
+Then reset and migrate:
+
+```bash
+# Drop all tables in phpMyAdmin first, then:
+rm -f storage/app/installed.lock
+php artisan migrate --force
+php artisan db:seed --force
+```
 
 ### “No application encryption key has been specified” (500 at `/install`)
 
