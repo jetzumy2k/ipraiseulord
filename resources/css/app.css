@@ -1,0 +1,1543 @@
+@import '@fortawesome/fontawesome-free/css/all.min.css';
+@import 'bootstrap/dist/css/bootstrap.min.css';
+@import 'admin-lte/dist/css/adminlte.min.css';
+
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Lato:wght@300;400;700&display=swap');
+
+/* -------------------------------------------------------------------------- */
+/* Public site — EveryPsalm-inspired                                           */
+/* -------------------------------------------------------------------------- */
+
+.public-site {
+  --cream: #FAF7F2;
+  --burgundy: #5C2E2E;
+  --burgundy-light: #7a4545;
+  --text: #2c2419;
+  --text-muted: #6b5d4f;
+  --card-bg: #fff;
+  --serif: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+  --sans: 'Lato', system-ui, sans-serif;
+
+  font-family: var(--sans);
+  color: var(--text);
+  background: var(--cream);
+  min-height: 100vh;
+}
+
+.public-site .site-header {
+  background: var(--card-bg);
+  border-bottom: 1px solid rgba(92, 46, 46, 0.12);
+}
+
+.public-site .header-top {
+  background: var(--burgundy);
+  color: #f5ebe8;
+  font-size: 0.875rem;
+}
+
+.public-site .admin-link {
+  color: #f5ebe8;
+  text-decoration: none;
+  opacity: 0.85;
+}
+
+.public-site .admin-link:hover {
+  opacity: 1;
+  color: #fff;
+}
+
+.public-site .site-logo {
+  font-family: var(--serif);
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--burgundy);
+  text-decoration: none;
+  letter-spacing: 0.02em;
+}
+
+.public-site .daily-psalm {
+  font-family: var(--serif);
+  color: var(--text-muted);
+  max-width: 720px;
+  margin-inline: auto;
+}
+
+.public-site .psalm-text {
+  font-size: 1.1rem;
+  font-style: italic;
+  margin-top: 0.35rem;
+}
+
+.public-site .site-banner {
+  position: relative;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+}
+
+.public-site .site-banner--image {
+  min-height: 220px;
+}
+
+.public-site .site-banner__overlay {
+  position: absolute;
+  inset: 0;
+  background: #1a1410;
+  pointer-events: none;
+}
+
+.public-site .site-banner__content {
+  position: relative;
+  z-index: 1;
+}
+
+.public-site .site-banner--image .site-logo,
+.public-site .site-banner--image .daily-psalm,
+.public-site .site-banner--image .psalm-text,
+.public-site .site-banner--image .banner-verse-version {
+  color: #fff;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.45);
+}
+
+.public-site .site-banner--image .site-logo:hover {
+  color: #fff;
+  opacity: 0.92;
+}
+
+.public-site .banner-verse-version {
+  font-size: 0.85rem;
+  opacity: 0.85;
+  margin-left: 0.35rem;
+}
+
+.public-site .site-nav {
+  border-top: 1px solid rgba(92, 46, 46, 0.08);
+}
+
+.public-site .site-nav .nav-link {
+  color: var(--burgundy);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  font-size: 0.78rem;
+  padding: 0.85rem 1rem;
+}
+
+.public-site .site-nav .nav-link.active,
+.public-site .site-nav .nav-link:hover {
+  color: var(--burgundy-light);
+}
+
+/* Liturgical themes — header & footer colors from today's Mass color */
+.public-site.liturgical-theme-green {
+  --liturgical-surface: #3d6b52;
+  --liturgical-surface-dark: #2f543f;
+  --liturgical-text: #f4f8f5;
+  --liturgical-text-muted: rgba(244, 248, 245, 0.92);
+  --liturgical-text-hover: #ffffff;
+  --liturgical-border: rgba(255, 255, 255, 0.16);
+}
+
+.public-site.liturgical-theme-purple {
+  --liturgical-surface: #5a3d78;
+  --liturgical-surface-dark: #452d5e;
+  --liturgical-text: #f7f2fb;
+  --liturgical-text-muted: rgba(247, 242, 251, 0.92);
+  --liturgical-text-hover: #ffffff;
+  --liturgical-border: rgba(255, 255, 255, 0.16);
+}
+
+.public-site.liturgical-theme-white {
+  --liturgical-surface: #f3ede3;
+  --liturgical-surface-dark: #e8dfd1;
+  --liturgical-text: var(--burgundy);
+  --liturgical-text-muted: var(--text-muted);
+  --liturgical-text-hover: var(--burgundy-light);
+  --liturgical-border: rgba(92, 46, 46, 0.12);
+}
+
+.public-site.liturgical-theme-red {
+  --liturgical-surface: #8f2f2f;
+  --liturgical-surface-dark: #702020;
+  --liturgical-text: #fdf3f3;
+  --liturgical-text-muted: rgba(253, 243, 243, 0.92);
+  --liturgical-text-hover: #ffffff;
+  --liturgical-border: rgba(255, 255, 255, 0.16);
+}
+
+.public-site.liturgical-theme-rose {
+  --liturgical-surface: #c98898;
+  --liturgical-surface-dark: #a86a78;
+  --liturgical-text: #fff8fa;
+  --liturgical-text-muted: rgba(255, 248, 250, 0.95);
+  --liturgical-text-hover: #ffffff;
+  --liturgical-border: rgba(255, 255, 255, 0.2);
+}
+
+.public-site.liturgical-theme-gold {
+  --liturgical-surface: #c9a227;
+  --liturgical-surface-dark: #a88418;
+  --liturgical-text: #fffaf0;
+  --liturgical-text-muted: rgba(255, 250, 240, 0.95);
+  --liturgical-text-hover: #ffffff;
+  --liturgical-border: rgba(255, 255, 255, 0.2);
+}
+
+.public-site.liturgical-theme-black {
+  --liturgical-surface: #2b2b2b;
+  --liturgical-surface-dark: #1a1a1a;
+  --liturgical-text: #f2f2f2;
+  --liturgical-text-muted: rgba(242, 242, 242, 0.9);
+  --liturgical-text-hover: #ffffff;
+  --liturgical-border: rgba(255, 255, 255, 0.12);
+}
+
+.public-site[class*='liturgical-theme-'] .site-header {
+  background: var(--liturgical-surface);
+  border-bottom-color: rgba(0, 0, 0, 0.12);
+}
+
+.public-site[class*='liturgical-theme-'] .site-header .header-top {
+  background: var(--liturgical-surface-dark);
+  color: var(--liturgical-text);
+}
+
+.public-site[class*='liturgical-theme-'] .site-header .admin-link {
+  color: var(--liturgical-text);
+  opacity: 0.9;
+}
+
+.public-site[class*='liturgical-theme-'] .site-header .admin-link:hover {
+  color: var(--liturgical-text-hover);
+  opacity: 1;
+}
+
+.public-site[class*='liturgical-theme-'] .site-header .site-logo,
+.public-site[class*='liturgical-theme-'] .site-header .site-nav .nav-link {
+  color: var(--liturgical-text);
+}
+
+.public-site[class*='liturgical-theme-'] .site-header .site-nav .nav-link.active,
+.public-site[class*='liturgical-theme-'] .site-header .site-nav .nav-link:hover {
+  color: var(--liturgical-text-hover);
+}
+
+.public-site[class*='liturgical-theme-'] .site-header .daily-psalm,
+.public-site[class*='liturgical-theme-'] .site-header .psalm-text {
+  color: var(--liturgical-text-muted);
+}
+
+.public-site[class*='liturgical-theme-'] .site-header .site-nav {
+  border-top-color: var(--liturgical-border);
+}
+
+.public-site[class*='liturgical-theme-'] .site-footer {
+  background: var(--liturgical-surface-dark);
+  color: var(--liturgical-text);
+  border-top: 1px solid var(--liturgical-border);
+}
+
+.public-site[class*='liturgical-theme-'] .site-footer a,
+.public-site[class*='liturgical-theme-'] .site-footer .social-link {
+  color: var(--liturgical-text);
+  text-decoration: none;
+  opacity: 0.92;
+}
+
+.public-site[class*='liturgical-theme-'] .site-footer a:hover,
+.public-site[class*='liturgical-theme-'] .site-footer .social-link:hover {
+  color: var(--liturgical-text-hover);
+  opacity: 1;
+}
+
+.public-site.liturgical-theme-white .site-header {
+  border-bottom-color: rgba(92, 46, 46, 0.14);
+}
+
+.public-site.liturgical-theme-white .site-header .header-top {
+  color: var(--text);
+}
+
+.public-site.liturgical-theme-black .site-header {
+  border-bottom-color: rgba(0, 0, 0, 0.2);
+}
+
+.public-site.liturgical-theme-rose .site-header,
+.public-site.liturgical-theme-gold .site-header {
+  border-bottom-color: rgba(0, 0, 0, 0.1);
+}
+
+.public-site .page-title {
+  font-family: var(--serif);
+  color: var(--burgundy);
+  font-weight: 700;
+  margin-bottom: 0.75rem;
+}
+
+.public-site .section-title {
+  font-family: var(--serif);
+  color: var(--burgundy);
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.public-site .content-card,
+.public-site .sidebar-card {
+  background: var(--card-bg);
+  border: 1px solid rgba(92, 46, 46, 0.1);
+  border-radius: 4px;
+  padding: 1.25rem 1.5rem;
+  box-shadow: 0 1px 3px rgba(44, 36, 25, 0.04);
+}
+
+.public-site .list-card {
+  text-decoration: none;
+  color: inherit;
+  transition: box-shadow 0.2s, transform 0.2s;
+}
+
+.public-site .list-card:hover {
+  box-shadow: 0 4px 12px rgba(92, 46, 46, 0.12);
+  transform: translateY(-2px);
+  color: inherit;
+}
+
+.public-site .sidebar-title {
+  font-family: var(--serif);
+  font-size: 1.15rem;
+  color: var(--burgundy);
+  margin-bottom: 0.75rem;
+}
+
+.public-site .proverb-quote {
+  font-family: var(--serif);
+  font-size: 1.05rem;
+  margin: 0;
+  border-left: 3px solid var(--burgundy);
+  padding-left: 1rem;
+}
+
+.public-site .proverb-quote footer {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-top: 0.5rem;
+}
+
+.public-site .sidebar-verse-quote {
+  font-family: var(--serif);
+  font-size: 1rem;
+  line-height: 1.65;
+  margin: 0;
+  border-left: 3px solid var(--burgundy);
+  padding-left: 1rem;
+}
+
+.public-site .sidebar-verse-quote p {
+  margin-bottom: 0;
+}
+
+.public-site .sidebar-verse-quote footer {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-top: 0.5rem;
+}
+
+.public-site .sidebar-verse-card + .sidebar-verse-card,
+.public-site .sidebar-verse-card + .sidebar-card,
+.public-site .sidebar-card + .sidebar-verse-card {
+  margin-top: 1rem;
+}
+
+.public-site .feature-card {
+  display: block;
+  padding: 1.5rem;
+  background: var(--card-bg);
+  border: 1px solid rgba(92, 46, 46, 0.1);
+  border-radius: 4px;
+  text-decoration: none;
+  color: inherit;
+  height: 100%;
+  transition: box-shadow 0.2s;
+}
+
+.public-site .feature-card:hover {
+  box-shadow: 0 4px 16px rgba(92, 46, 46, 0.1);
+  color: inherit;
+}
+
+.public-site .feature-card i {
+  font-size: 1.75rem;
+  color: var(--burgundy);
+  margin-bottom: 0.75rem;
+}
+
+.public-site .feature-card h3 {
+  font-family: var(--serif);
+  font-size: 1.35rem;
+  color: var(--burgundy);
+}
+
+.public-site .read-more {
+  display: inline-block;
+  margin-top: 0.75rem;
+  color: var(--burgundy);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.public-site .scripture-text {
+  font-family: var(--serif);
+  font-size: 1.2rem;
+  line-height: 1.75;
+}
+
+.public-site .verse-num {
+  color: var(--burgundy);
+  font-weight: 700;
+  margin-right: 0.35rem;
+}
+
+.public-site .verse-line {
+  scroll-margin-top: 1.5rem;
+}
+
+.public-site .scripture-text--selectable .verse-line {
+  cursor: pointer;
+  padding: 0.35rem 0.5rem;
+  margin: 0 -0.5rem;
+  border-radius: 4px;
+  transition: background 0.15s ease, box-shadow 0.15s ease;
+}
+
+.public-site .scripture-text--selectable .verse-line:hover {
+  background: rgba(92, 46, 46, 0.05);
+}
+
+.public-site .scripture-text--selectable .verse-line--selected {
+  background: rgba(92, 46, 46, 0.12);
+  box-shadow: inset 3px 0 0 var(--burgundy);
+}
+
+.public-site .bible-select-help {
+  font-style: italic;
+}
+
+.public-site .bible-selection-hint {
+  font-size: 0.875rem;
+  color: var(--burgundy);
+}
+
+.public-site .social-share-bar {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.35rem;
+}
+
+.public-site .social-share-bar--compact {
+  align-items: flex-start;
+}
+
+.public-site .social-share-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: rgba(92, 46, 46, 0.65);
+}
+
+.public-site .social-share-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.public-site .social-share-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.4rem 0.65rem;
+  border: 1px solid rgba(92, 46, 46, 0.15);
+  border-radius: 999px;
+  background: #fff;
+  color: var(--share-color, var(--burgundy));
+  font-size: 0.78rem;
+  font-weight: 600;
+  line-height: 1;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+.public-site .social-share-btn:hover {
+  background: var(--share-color, var(--burgundy));
+  border-color: var(--share-color, var(--burgundy));
+  color: #fff;
+}
+
+.public-site .social-share-btn--native {
+  --share-color: var(--burgundy);
+}
+
+.public-site .social-share-feedback {
+  margin: 0;
+  font-size: 0.75rem;
+  color: var(--burgundy);
+}
+
+.public-site .verse-share-toolbar {
+  position: fixed;
+  bottom: 1.25rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1050;
+  max-width: calc(100vw - 2rem);
+}
+
+.public-site .verse-share-toolbar-inner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.65rem 0.85rem;
+  background: #fff;
+  border: 1px solid rgba(92, 46, 46, 0.15);
+  border-radius: 999px;
+  box-shadow: 0 8px 30px rgba(44, 36, 25, 0.18);
+}
+
+.public-site .verse-share-count {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--burgundy);
+  white-space: nowrap;
+}
+
+.public-site .verse-share-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.public-site .verse-share-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.1rem;
+  height: 2.1rem;
+  border: none;
+  border-radius: 50%;
+  background: var(--share-color, var(--burgundy));
+  color: #fff;
+  font-size: 0.95rem;
+  transition: transform 0.15s ease, opacity 0.15s ease;
+}
+
+.public-site .verse-share-btn:hover {
+  transform: translateY(-1px);
+  opacity: 0.92;
+}
+
+.public-site .verse-share-btn--clear {
+  background: rgba(92, 46, 46, 0.12);
+  color: var(--burgundy);
+}
+
+.public-site .verse-share-feedback {
+  margin: 0;
+  font-size: 0.75rem;
+  color: var(--burgundy);
+}
+
+.public-site .public-page:has(.verse-share-toolbar) {
+  padding-bottom: 5rem;
+}
+
+.public-site .bible-jump-nav {
+  padding: 1rem 1.25rem;
+}
+
+.public-site .bible-jump-nav-fields {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 0.75rem;
+}
+
+.public-site .bible-jump-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  flex: 1 1 10rem;
+  min-width: 8rem;
+  margin: 0;
+}
+
+.public-site .bible-jump-field--short {
+  flex: 0 1 6rem;
+  min-width: 5rem;
+}
+
+.public-site .bible-jump-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: rgba(92, 46, 46, 0.7);
+}
+
+.public-site .bible-jump-go {
+  flex: 0 0 auto;
+  min-width: 4rem;
+}
+
+.public-site .bible-version-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.public-site .bible-select-bars {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+}
+
+.public-site .bible-version-label {
+  flex-shrink: 0;
+  margin: 0;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--burgundy);
+}
+
+.public-site .bible-version-select {
+  max-width: 100%;
+  flex: 1;
+  border-color: rgba(92, 46, 46, 0.2);
+}
+
+.public-site .bible-books-section {
+  margin-top: 0;
+}
+
+.public-site .bible-books-section .section-title {
+  margin-bottom: 0.35rem;
+}
+
+.public-site .bible-books-hint {
+  font-size: 0.9rem;
+}
+
+.public-site .book-grid--compact {
+  grid-template-columns: repeat(auto-fill, minmax(7.5rem, 1fr));
+  gap: 0.4rem;
+}
+
+.public-site .book-grid--compact .book-link {
+  padding: 0.4rem 0.5rem;
+  font-size: 0.82rem;
+}
+
+.public-site .book-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 0.5rem;
+}
+
+.public-site .book-link {
+  display: block;
+  padding: 0.5rem 0.75rem;
+  background: var(--card-bg);
+  border: 1px solid rgba(92, 46, 46, 0.12);
+  border-radius: 3px;
+  text-decoration: none;
+  color: var(--burgundy);
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+.public-site .book-link:hover {
+  background: var(--burgundy);
+  color: #fff;
+}
+
+.public-site .breadcrumb-nav a {
+  color: var(--burgundy);
+  text-decoration: none;
+}
+
+.public-site .btn-primary {
+  background: var(--burgundy);
+  border-color: var(--burgundy);
+}
+
+.public-site .btn-primary:hover {
+  background: var(--burgundy-light);
+  border-color: var(--burgundy-light);
+}
+
+.public-site .btn-donate {
+  background: var(--burgundy);
+  border-color: var(--burgundy);
+  color: #fff;
+}
+
+.public-site .site-footer {
+  background: var(--burgundy);
+  color: #f5ebe8;
+  margin-top: 3rem;
+}
+
+.public-site .site-footer a {
+  color: #f5ebe8;
+}
+
+.public-site .prayer-content {
+  white-space: pre-wrap;
+  font-family: var(--serif);
+  font-size: 1.15rem;
+  line-height: 1.8;
+}
+
+.public-site .reading-block {
+  margin-bottom: 1.75rem;
+}
+
+.public-site .reading-block h3 {
+  font-family: var(--serif);
+  color: var(--burgundy);
+  font-size: 1.25rem;
+}
+
+.public-site .reading-text {
+  white-space: pre-line;
+}
+
+.public-site .mass-guide-nav {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.public-site .mass-guide-date {
+  width: 10.5rem;
+}
+
+.public-site .mass-guide-toc {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(92, 46, 46, 0.12);
+}
+
+.public-site .mass-guide-toc-link {
+  font-size: 0.875rem;
+  padding: 0.35rem 0.75rem;
+  border-radius: 999px;
+  background: rgba(92, 46, 46, 0.06);
+  color: var(--burgundy);
+  text-decoration: none;
+}
+
+.public-site .mass-guide-toc-link:hover {
+  background: rgba(92, 46, 46, 0.12);
+}
+
+.public-site .mass-section {
+  margin-top: 2rem;
+}
+
+.public-site .mass-section-title {
+  font-family: var(--serif);
+  color: var(--burgundy);
+  font-size: 1.5rem;
+  margin-bottom: 1.25rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid rgba(92, 46, 46, 0.15);
+}
+
+.public-site .mass-step {
+  margin-bottom: 1.5rem;
+}
+
+.public-site .mass-step-title {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 0.75rem;
+}
+
+.public-site .mass-part {
+  margin-bottom: 0.75rem;
+  padding: 0.75rem 1rem;
+  border-radius: 4px;
+  border-left: 3px solid transparent;
+}
+
+.public-site .mass-part-label {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  margin-bottom: 0.35rem;
+}
+
+.public-site .mass-part-text {
+  margin: 0;
+  white-space: pre-line;
+  line-height: 1.65;
+}
+
+.public-site .mass-part--priest {
+  background: rgba(92, 46, 46, 0.05);
+  border-left-color: var(--burgundy);
+}
+
+.public-site .mass-part--priest .mass-part-label {
+  color: var(--burgundy);
+}
+
+.public-site .mass-part--people {
+  background: rgba(46, 92, 74, 0.06);
+  border-left-color: #2e5c4a;
+}
+
+.public-site .mass-part--people .mass-part-label {
+  color: #2e5c4a;
+}
+
+.public-site .mass-part--all {
+  background: rgba(92, 46, 46, 0.08);
+  border-left-color: var(--burgundy);
+}
+
+.public-site .mass-part--all .mass-part-label {
+  color: var(--burgundy);
+}
+
+.public-site .mass-part--reader {
+  background: rgba(70, 70, 120, 0.06);
+  border-left-color: #464678;
+}
+
+.public-site .mass-part--reader .mass-part-label {
+  color: #464678;
+}
+
+.public-site .mass-part--reading {
+  background: rgba(255, 255, 255, 0.6);
+  border-left-color: rgba(92, 46, 46, 0.35);
+  font-family: var(--serif);
+  font-size: 1.05rem;
+}
+
+.public-site .mass-part--reading .mass-part-label {
+  color: rgba(92, 46, 46, 0.7);
+}
+
+.public-site .mass-part--note {
+  background: rgba(0, 0, 0, 0.03);
+  border-left-color: rgba(0, 0, 0, 0.15);
+  font-style: italic;
+}
+
+.public-site .mass-part--note .mass-part-label {
+  color: rgba(0, 0, 0, 0.45);
+}
+
+.public-site .novena-day-nav {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 0;
+  border-top: 1px solid rgba(92, 46, 46, 0.12);
+  border-bottom: 1px solid rgba(92, 46, 46, 0.12);
+}
+
+.public-site .novena-day-nav-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: rgba(92, 46, 46, 0.7);
+  margin-right: 0.25rem;
+}
+
+.public-site .novena-section-subtitle {
+  font-size: 1rem;
+  font-weight: 500;
+  color: rgba(92, 46, 46, 0.75);
+}
+
+.public-site .ai-advice-answer {
+  padding: 1.5rem 1.75rem;
+}
+
+.public-site .ai-advice-title {
+  font-family: var(--serif);
+  color: var(--burgundy);
+  font-size: 1.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.public-site .ai-advice-body {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.public-site .ai-answer-intro {
+  font-size: 1.05rem;
+  font-weight: 600;
+  margin: 0;
+  line-height: 1.7;
+}
+
+.public-site .ai-answer-paragraph {
+  margin: 0;
+  line-height: 1.75;
+}
+
+.public-site .ai-answer-scripture {
+  margin: 0.25rem 0;
+  padding: 1rem 1.25rem;
+  border-left: 4px solid var(--burgundy);
+  background: rgba(92, 46, 46, 0.05);
+  border-radius: 0 4px 4px 0;
+}
+
+.public-site .ai-answer-scripture-label {
+  margin: 0 0 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--burgundy);
+}
+
+.public-site .ai-answer-scripture-text {
+  margin: 0;
+  font-family: var(--serif);
+  font-size: 1.1rem;
+  line-height: 1.75;
+  font-style: italic;
+}
+
+.public-site .ai-answer-closing {
+  margin: 0.5rem 0 0;
+  padding-top: 0.75rem;
+  border-top: 1px solid rgba(92, 46, 46, 0.12);
+  font-style: italic;
+  line-height: 1.75;
+  color: rgba(92, 46, 46, 0.85);
+}
+
+.public-site .ai-references {
+  margin-top: 1.75rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid rgba(92, 46, 46, 0.12);
+}
+
+.public-site .ai-references-title {
+  font-family: var(--serif);
+  font-size: 1.15rem;
+  color: var(--burgundy);
+  margin-bottom: 1rem;
+}
+
+.public-site .ai-references-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.public-site .ai-reference-item {
+  padding: 0.85rem 1rem;
+  background: rgba(92, 46, 46, 0.04);
+  border-radius: 4px;
+}
+
+.public-site .ai-reference-citation {
+  margin: 0 0 0.35rem;
+  font-weight: 700;
+  color: var(--burgundy);
+}
+
+.public-site .ai-reference-text {
+  margin: 0;
+  font-family: var(--serif);
+  font-size: 0.98rem;
+  line-height: 1.65;
+  color: rgba(0, 0, 0, 0.78);
+}
+
+.public-site .static-content .page-paragraph,
+.public-site .static-content p {
+  margin-bottom: 1rem;
+  line-height: 1.75;
+}
+
+.public-site .static-content blockquote {
+  margin: 1.25rem 0;
+  padding: 0.75rem 1rem;
+  border-left: 4px solid var(--burgundy);
+  background: rgba(92, 46, 46, 0.05);
+  font-style: italic;
+}
+
+.public-site .static-content .page-columns {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.5rem;
+  margin: 1.25rem 0;
+}
+
+.public-site .static-content .page-image img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 4px;
+}
+
+.public-site .static-content .page-image figcaption {
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  text-align: center;
+}
+
+.public-site .static-content .page-separator {
+  margin: 1.5rem 0;
+  border-color: rgba(92, 46, 46, 0.15);
+}
+
+@media (max-width: 768px) {
+  .public-site .static-content .page-columns {
+    grid-template-columns: 1fr;
+  }
+}
+
+.public-site .donation-widget.compact {
+  background: var(--card-bg);
+  border: 1px solid rgba(92, 46, 46, 0.1);
+  padding: 1rem;
+  border-radius: 4px;
+}
+
+.public-site .donation-qr-img {
+  display: block;
+  max-width: 140px;
+  width: 100%;
+  height: auto;
+  border: 1px solid rgba(92, 46, 46, 0.12);
+  border-radius: 8px;
+  background: #fff;
+  padding: 0.35rem;
+}
+
+.public-site .donation-widget .donation-qr {
+  margin: 0.5rem 0;
+}
+
+.public-site .donation-card-body {
+  display: flex;
+  gap: 1.5rem;
+  align-items: flex-start;
+}
+
+.public-site .donation-card-details {
+  flex: 1;
+  min-width: 0;
+}
+
+.public-site .donation-qr--page {
+  flex-shrink: 0;
+  text-align: center;
+}
+
+.public-site .donation-qr--page .donation-qr-img {
+  max-width: 180px;
+  margin: 0 auto;
+}
+
+.public-site .donation-instructions p:last-child {
+  margin-bottom: 0;
+}
+
+@media (max-width: 576px) {
+  .public-site .donation-card-body {
+    flex-direction: column;
+  }
+
+  .public-site .donation-qr--page {
+    width: 100%;
+  }
+}
+
+/* -------------------------------------------------------------------------- */
+/* Admin overrides                                                             */
+/* -------------------------------------------------------------------------- */
+
+.wrapper .content-wrapper {
+  min-height: calc(100vh - 57px);
+}
+
+.login-page .btn-primary {
+  background: #007bff;
+  border-color: #007bff;
+}
+
+.sortable {
+  cursor: pointer;
+  user-select: none;
+}
+
+.table th.sortable:hover {
+  background: rgba(0, 0, 0, 0.03);
+}
+
+.admin-modal .modal-content {
+  border: none;
+  border-radius: 8px;
+  box-shadow: 0 20px 50px rgba(15, 23, 42, 0.18);
+  overflow: hidden;
+}
+
+.admin-modal .modal-header {
+  background: #f8fafc;
+  border-bottom: 1px solid #e2e8f0;
+  padding: 1rem 1.25rem;
+}
+
+.admin-modal .modal-title {
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.admin-modal .modal-body {
+  padding: 1.25rem;
+  background: #fff;
+}
+
+.admin-modal .modal-footer {
+  background: #f8fafc;
+  border-top: 1px solid #e2e8f0;
+  padding: 0.875rem 1.25rem;
+}
+
+.admin-form-label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #334155;
+  margin-bottom: 0.35rem;
+}
+
+.admin-form-switch {
+  padding-top: 0.35rem;
+}
+
+.admin-form-field--switch {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  height: 100%;
+  min-height: 4.5rem;
+}
+
+.admin-form-switch-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  min-height: 38px;
+}
+
+.admin-form-switch-label {
+  flex: 1;
+  min-width: 0;
+}
+
+.admin-form-switch-control {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.admin-form-switch-status {
+  font-size: 0.8125rem;
+  color: #64748b;
+  white-space: nowrap;
+}
+
+.admin-form-switch-row .form-check.form-switch {
+  padding-left: 0;
+  margin-bottom: 0;
+  min-height: auto;
+}
+
+.admin-form-switch-row .form-check-input {
+  float: none;
+  margin: 0;
+  width: 2.5em;
+  height: 1.25em;
+}
+
+.admin-multiselect-dropdown {
+  position: relative;
+}
+
+.admin-multiselect-trigger {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+  background-color: #fff;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  min-height: 38px;
+  padding: 0.375rem 0.75rem;
+}
+
+.admin-multiselect-trigger.is-open {
+  border-color: #64748b;
+  box-shadow: 0 0 0 0.2rem rgba(100, 116, 139, 0.15);
+}
+
+.admin-multiselect-summary {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: #334155;
+}
+
+.admin-multiselect-chevron {
+  flex-shrink: 0;
+  font-size: 0.75rem;
+  color: #64748b;
+  transition: transform 0.15s ease;
+}
+
+.admin-multiselect-trigger.is-open .admin-multiselect-chevron {
+  transform: rotate(180deg);
+}
+
+.admin-multiselect-menu {
+  position: absolute;
+  z-index: 1060;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  max-height: 220px;
+  overflow-y: auto;
+  background: #fff;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.12);
+  padding: 0.35rem 0;
+}
+
+.admin-multiselect-option {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.45rem 0.75rem;
+  margin: 0;
+  cursor: pointer;
+  font-size: 0.875rem;
+  color: #334155;
+}
+
+.admin-multiselect-option:hover {
+  background: #f8fafc;
+}
+
+.admin-multiselect-option .form-check-input {
+  margin: 0;
+  flex-shrink: 0;
+}
+
+.admin-multiselect-empty {
+  margin: 0;
+  padding: 0.5rem 0.75rem;
+  color: #64748b;
+  font-size: 0.875rem;
+}
+
+.donation-admin-controls {
+  background: #fff;
+}
+
+.donation-admin-controls__global {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.donation-admin-controls__summary {
+  line-height: 1.4;
+}
+
+.admin-table-switch {
+  display: flex;
+  justify-content: center;
+}
+
+.admin-table-switch .form-check-input {
+  float: none;
+  margin: 0;
+}
+
+.admin-form-image-preview img {
+  max-width: 160px;
+  max-height: 160px;
+  object-fit: contain;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  background: #fff;
+  padding: 0.35rem;
+}
+
+.admin-form-image-preview--banner img {
+  max-width: 100%;
+  max-height: none;
+  width: 100%;
+  aspect-ratio: 16 / 3;
+  object-fit: cover;
+}
+
+.admin-crud-form .form-control,
+.admin-crud-form .form-select {
+  border-color: #cbd5e1;
+  border-radius: 6px;
+}
+
+.admin-crud-form .form-control:focus,
+.admin-crud-form .form-select:focus {
+  border-color: #64748b;
+  box-shadow: 0 0 0 0.2rem rgba(100, 116, 139, 0.15);
+}
+
+.rich-text-editor .ql-toolbar.ql-snow {
+  border: 1px solid #cbd5e1;
+  border-radius: 6px 6px 0 0;
+  background: #f8fafc;
+}
+
+.rich-text-editor .ql-container.ql-snow {
+  border: 1px solid #cbd5e1;
+  border-top: none;
+  border-radius: 0 0 6px 6px;
+  min-height: 140px;
+  font-size: 0.95rem;
+}
+
+.rich-text-editor--compact .ql-container.ql-snow {
+  min-height: 110px;
+}
+
+.page-builder {
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  background: #f8fafc;
+  padding: 1rem;
+}
+
+.page-builder-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.page-builder-empty {
+  text-align: center;
+  padding:  2rem 1rem;
+  border: 1px dashed #cbd5e1;
+  border-radius: 8px;
+  background: #fff;
+}
+
+.page-builder-block {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  margin-bottom: 0.875rem;
+  overflow: hidden;
+}
+
+.page-builder-block-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.65rem 0.85rem;
+  background: #f1f5f9;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.page-builder-block-label {
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: #475569;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.page-builder-block-body {
+  padding: 0.875rem;
+}
+
+.page-builder-separator-preview {
+  margin: 0;
+  border-color: #cbd5e1;
+}
+
+.public-site .fiesta-nav {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.public-site .fiesta-month-select,
+.public-site .fiesta-year-select {
+  width: auto;
+  min-width: 8rem;
+}
+
+.public-site .fiesta-filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem;
+}
+
+.public-site .fiesta-filters-label {
+  font-weight: 600;
+  color: var(--burgundy);
+  margin-right: 0.25rem;
+}
+
+.public-site .fiesta-calendar-head,
+.public-site .fiesta-calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+}
+
+.public-site .fiesta-calendar-head {
+  border-bottom: 1px solid rgba(92, 46, 46, 0.12);
+}
+
+.public-site .fiesta-calendar-weekday {
+  padding: 0.75rem 0.5rem;
+  text-align: center;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: var(--burgundy);
+}
+
+.public-site .fiesta-calendar-cell {
+  min-height: 5.5rem;
+  border: 1px solid rgba(92, 46, 46, 0.08);
+  background: #fff;
+  padding: 0.5rem;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.public-site .fiesta-calendar-cell--muted {
+  background: rgba(248, 245, 240, 0.8);
+  color: #94a3b8;
+}
+
+.public-site .fiesta-calendar-cell--today {
+  box-shadow: inset 0 0 0 2px rgba(92, 46, 46, 0.35);
+}
+
+.public-site .fiesta-calendar-cell--selected {
+  background: rgba(92, 46, 46, 0.08);
+}
+
+.public-site .fiesta-calendar-day {
+  font-weight: 700;
+}
+
+.public-site .fiesta-calendar-dots {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+}
+
+.public-site .fiesta-calendar-dot {
+  width: 0.55rem;
+  height: 0.55rem;
+  border-radius: 999px;
+  display: inline-block;
+}
+
+.public-site .fiesta-calendar-dot--christ { background: #b91c1c; }
+.public-site .fiesta-calendar-dot--father { background: #7c3aed; }
+.public-site .fiesta-calendar-dot--mary { background: #2563eb; }
+.public-site .fiesta-calendar-dot--saint { background: #059669; }
+.public-site .fiesta-calendar-dot--angel { background: #d97706; }
+
+.public-site .fiesta-events-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.public-site .fiesta-event {
+  display: flex;
+  gap: 1rem;
+  padding: 1rem 0;
+  border-bottom: 1px solid rgba(92, 46, 46, 0.1);
+}
+
+.public-site .fiesta-event:last-child {
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+
+.public-site .fiesta-event-badge {
+  flex: 0 0 auto;
+  align-self: flex-start;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  padding: 0.35rem 0.55rem;
+  border-radius: 999px;
+  color: #fff;
+}
+
+.public-site .fiesta-event-badge--christ { background: #b91c1c; }
+.public-site .fiesta-event-badge--father { background: #7c3aed; }
+.public-site .fiesta-event-badge--mary { background: #2563eb; }
+.public-site .fiesta-event-badge--saint { background: #059669; }
+.public-site .fiesta-event-badge--angel { background: #d97706; }
+
+.public-site .fiesta-event-title {
+  font-size: 1.125rem;
+  margin-bottom: 0.35rem;
+  color: var(--burgundy);
+}
+
+.public-site .fiesta-event-honoree {
+  font-weight: 600;
+}
+

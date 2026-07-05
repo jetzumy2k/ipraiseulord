@@ -1,0 +1,196 @@
+[
+    {
+        "name": "Revised Standard Version Catholic Edition",
+        "abbreviation": "RSVCE",
+        "language": "en",
+        "canon": "catholic",
+        "description": "Catholic edition of the RSV. Seeded with public-domain Douay-Rheims text; import licensed RSVCE text via admin when available.",
+        "import": { "strategy": "douay", "supplement_from": "KJV" }
+    },
+    {
+        "name": "New American Bible Revised Edition",
+        "abbreviation": "NABRE",
+        "language": "en",
+        "canon": "catholic",
+        "description": "Official US Catholic translation. Seeded with public-domain Douay-Rheims text; import licensed NABRE text via admin when available.",
+        "import": { "strategy": "douay", "supplement_from": "KJV" }
+    },
+    {
+        "name": "King James Version",
+        "abbreviation": "KJV",
+        "language": "en",
+        "canon": "catholic",
+        "description": "The classic Authorized Version with deuterocanonical books from Douay-Rheims.",
+        "import": { "strategy": "thiagobodruk_deuterocanonical", "source": "en_kjv.json" }
+    },
+    {
+        "name": "Douay-Rheims Bible",
+        "abbreviation": "DR",
+        "language": "en",
+        "canon": "catholic",
+        "description": "Classic Catholic English translation (public domain).",
+        "import": { "strategy": "douay" }
+    },
+    {
+        "name": "Basic English Bible",
+        "abbreviation": "BBE",
+        "language": "en",
+        "canon": "protestant",
+        "description": "Simple English Bible translation.",
+        "import": { "strategy": "thiagobodruk", "source": "en_bbe.json" }
+    },
+    {
+        "name": "The Arabic Bible",
+        "abbreviation": "AR",
+        "language": "ar",
+        "canon": "protestant",
+        "description": "Smith-Van Dyke Arabic Bible.",
+        "import": { "strategy": "thiagobodruk", "source": "ar_svd.json" }
+    },
+    {
+        "name": "Chinese Union Version",
+        "abbreviation": "CUV",
+        "language": "zh",
+        "canon": "protestant",
+        "description": "Traditional Chinese Union Version.",
+        "import": { "strategy": "thiagobodruk", "source": "zh_cuv.json" }
+    },
+    {
+        "name": "New Chinese Version",
+        "abbreviation": "NCV",
+        "language": "zh",
+        "canon": "protestant",
+        "description": "New Chinese Version (Simplified).",
+        "import": { "strategy": "thiagobodruk", "source": "zh_ncv.json" }
+    },
+    {
+        "name": "Schlachter Bible",
+        "abbreviation": "SCH",
+        "language": "de",
+        "canon": "protestant",
+        "description": "German Schlachter translation.",
+        "import": { "strategy": "thiagobodruk", "source": "de_schlachter.json" }
+    },
+    {
+        "name": "Modern Greek Bible",
+        "abbreviation": "GRC",
+        "language": "el",
+        "canon": "protestant",
+        "description": "Modern Greek New Testament and Bible.",
+        "import": { "strategy": "thiagobodruk", "source": "el_greek.json" }
+    },
+    {
+        "name": "Esperanto Bible",
+        "abbreviation": "ESP",
+        "language": "eo",
+        "canon": "protestant",
+        "description": "Esperanto Bible translation.",
+        "import": { "strategy": "thiagobodruk", "source": "eo_esperanto.json" }
+    },
+    {
+        "name": "Reina-Valera Bible",
+        "abbreviation": "RVR",
+        "language": "es",
+        "canon": "protestant",
+        "description": "Classic Spanish Reina-Valera translation.",
+        "import": { "strategy": "thiagobodruk", "source": "es_rvr.json" }
+    },
+    {
+        "name": "Finnish Bible",
+        "abbreviation": "FIN",
+        "language": "fi",
+        "canon": "protestant",
+        "description": "Finnish Bible translation.",
+        "import": { "strategy": "thiagobodruk", "source": "fi_finnish.json" }
+    },
+    {
+        "name": "Pyhä Raamattu",
+        "abbreviation": "FPR",
+        "language": "fi",
+        "canon": "protestant",
+        "description": "Finnish Pyhä Raamattu translation.",
+        "import": { "strategy": "thiagobodruk", "source": "fi_pr.json" }
+    },
+    {
+        "name": "La Bible de l'Épée",
+        "abbreviation": "APEE",
+        "language": "fr",
+        "canon": "protestant",
+        "description": "French Bible de l'Épée translation.",
+        "import": { "strategy": "thiagobodruk", "source": "fr_apee.json" }
+    },
+    {
+        "name": "Korean Bible",
+        "abbreviation": "KOR",
+        "language": "ko",
+        "canon": "protestant",
+        "description": "Korean Bible translation.",
+        "import": { "strategy": "thiagobodruk", "source": "ko_ko.json" }
+    },
+    {
+        "name": "Almeida Revisada Imprensa Bíblica",
+        "abbreviation": "PTAA",
+        "language": "pt",
+        "canon": "protestant",
+        "description": "Portuguese Almeida Revisada (Imprensa Bíblica).",
+        "import": { "strategy": "thiagobodruk", "source": "pt_aa.json" }
+    },
+    {
+        "name": "Almeida Corrigida e Revisada Fiel",
+        "abbreviation": "PTACF",
+        "language": "pt",
+        "canon": "protestant",
+        "description": "Portuguese Almeida Corrigida e Revisada Fiel.",
+        "import": { "strategy": "thiagobodruk", "source": "pt_acf.json" }
+    },
+    {
+        "name": "Nova Versão Internacional",
+        "abbreviation": "PTNVI",
+        "language": "pt",
+        "canon": "protestant",
+        "description": "Portuguese Nova Versão Internacional.",
+        "import": { "strategy": "thiagobodruk", "source": "pt_nvi.json" }
+    },
+    {
+        "name": "Cornilescu Bible",
+        "abbreviation": "COR",
+        "language": "ro",
+        "canon": "protestant",
+        "description": "Romanian Dumitru Cornilescu translation.",
+        "import": { "strategy": "thiagobodruk", "source": "ro_cornilescu.json" }
+    },
+    {
+        "name": "Russian Synodal Bible",
+        "abbreviation": "SYN",
+        "language": "ru",
+        "canon": "protestant",
+        "description": "Russian Synodal translation.",
+        "import": { "strategy": "thiagobodruk", "source": "ru_synodal.json" }
+    },
+    {
+        "name": "Vietnamese Bible",
+        "abbreviation": "VIE",
+        "language": "vi",
+        "canon": "protestant",
+        "description": "Vietnamese Bible translation.",
+        "import": { "strategy": "thiagobodruk", "source": "vi_vietnamese.json" }
+    },
+    {
+        "name": "Ang Dating Biblia",
+        "abbreviation": "ADB",
+        "language": "tl",
+        "canon": "protestant",
+        "description": "Tagalog Ang Dating Biblia (1905, public domain).",
+        "import": { "strategy": "adb_csv", "source": "adb.csv" },
+        "book_names": "tagalog"
+    },
+    {
+        "name": "Ang Biblia (Cebuano Pinadayag)",
+        "abbreviation": "CEB",
+        "language": "ceb",
+        "canon": "protestant",
+        "description": "Cebuano Pinadayag Bible (1917 OT, revised NT; public domain).",
+        "import": { "strategy": "ccel_thml", "source": "ceb_p.xml" },
+        "book_names": "cebuano"
+    }
+]
