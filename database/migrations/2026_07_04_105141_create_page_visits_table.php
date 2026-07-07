@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('page_slug')->nullable();
             $table->string('page_title')->nullable();
             $table->string('ip_address', 45)->nullable();
-            $table->string('user_agent')->nullable();
+            $table->text('user_agent')->nullable();
             $table->timestamp('visited_at');
             $table->timestamps();
 

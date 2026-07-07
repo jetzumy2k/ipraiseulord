@@ -4,21 +4,31 @@ namespace App\Services;
 
 use App\Models\PageVisit;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
 
 class AnalyticsService
 {
     public function track(array $data): PageVisit
     {
         return PageVisit::create([
-            'visitor_id' => $data['visitor_id'] ?? null,
-            'page_type' => $data['page_type'],
+            'visitor_id' => $this->clip($data['visitor_id'] ?? null, 255),
+            'page_type' => $this->clip($data['page_type'], 255),
             'page_id' => $data['page_id'] ?? null,
-            'page_slug' => $data['page_slug'] ?? null,
-            'page_title' => $data['page_title'] ?? null,
-            'ip_address' => $data['ip_address'] ?? null,
-            'user_agent' => $data['user_agent'] ?? null,
+            'page_slug' => $this->clip($data['page_slug'] ?? null, 255),
+            'page_title' => $this->clip($data['page_title'] ?? null, 255),
+            'ip_address' => $this->clip($data['ip_address'] ?? null, 45),
+            'user_agent' => $this->clip($data['user_agent'] ?? null, 1024),
             'visited_at' => $data['visited_at'] ?? now(),
         ]);
+    }
+
+    private function clip(?string $value, int $max): ?string
+    {
+        if ($value === null) {
+            return null;
+        }
+
+        return Str::substr($value, 0, $max);
     }
 
     public function recentVisits(int $limit = 10): Collection

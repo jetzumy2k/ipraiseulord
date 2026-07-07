@@ -39,7 +39,7 @@ class PageVisitController extends Controller
             'page_slug' => ['nullable', 'string', 'max:255'],
             'page_title' => ['nullable', 'string', 'max:255'],
             'ip_address' => ['nullable', 'string', 'max:45'],
-            'user_agent' => ['nullable', 'string', 'max:255'],
+            'user_agent' => ['nullable', 'string', 'max:1024'],
             'visited_at' => ['nullable', 'date'],
         ];
     }
@@ -53,7 +53,7 @@ class PageVisitController extends Controller
             'page_slug' => ['nullable', 'string', 'max:255'],
             'page_title' => ['nullable', 'string', 'max:255'],
             'ip_address' => ['nullable', 'string', 'max:45'],
-            'user_agent' => ['nullable', 'string', 'max:255'],
+            'user_agent' => ['nullable', 'string', 'max:1024'],
             'visited_at' => ['nullable', 'date'],
         ];
     }
