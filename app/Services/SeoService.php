@@ -150,6 +150,19 @@ class SeoService
             ], $request);
         }
 
+        if ($path === '/ai-advice') {
+            $conversationId = $request->query('id') ?? $request->query('conversation');
+
+            if ($conversationId !== null && ctype_digit((string) $conversationId)) {
+                $sharedPath = $path.'?id='.$conversationId;
+                $conversationMeta = $this->metaForAiConversation((int) $conversationId, $sharedPath);
+
+                if ($conversationMeta !== null) {
+                    return $this->buildMeta($conversationMeta, $request);
+                }
+            }
+        }
+
         if ($route = PublicRouteSeo::findByPath($path)) {
             $meta = [
                 'title' => $route['title'],
@@ -223,23 +236,10 @@ class SeoService
         }
 
         if (preg_match('#^/ai-advice/(\d+)$#', $path, $matches)) {
-            $conversation = AiConversation::query()->find($matches[1]);
+            $conversationMeta = $this->metaForAiConversation((int) $matches[1], $path);
 
-            if ($conversation) {
-                $question = trim(strip_tags($conversation->question));
-                $answer = trim(strip_tags($conversation->answer));
-                $description = $question !== ''
-                    ? 'Q: '.$this->excerpt($question, '', 80).' — '.$this->excerpt($answer, '', 80)
-                    : $this->excerpt($answer, 'Scripture-based spiritual guidance on '.$this->siteName().'.', 160);
-
-                return $this->buildMeta([
-                    'title' => 'AI Spiritual Advice',
-                    'description' => $description,
-                    'path' => $path,
-                    'route_key' => 'ai-advice',
-                    'og_type' => 'article',
-                    'robots' => 'noindex, follow',
-                ], $request);
+            if ($conversationMeta !== null) {
+                return $this->buildMeta($conversationMeta, $request);
             }
         }
 
@@ -339,6 +339,33 @@ class SeoService
         }
 
         return $value;
+    }
+
+    /**
+     * @return array<string, mixed>|null
+     */
+    protected function metaForAiConversation(int $conversationId, string $path): ?array
+    {
+        $conversation = AiConversation::query()->find($conversationId);
+
+        if (! $conversation) {
+            return null;
+        }
+
+        $question = trim(strip_tags($conversation->question));
+        $answer = trim(strip_tags($conversation->answer));
+        $description = $question !== ''
+            ? 'Q: '.$this->excerpt($question, '', 80).' — '.$this->excerpt($answer, '', 80)
+            : $this->excerpt($answer, 'Scripture-based spiritual guidance on '.$this->siteName().'.', 160);
+
+        return [
+            'title' => 'AI Spiritual Advice',
+            'description' => $description,
+            'path' => $path,
+            'route_key' => 'ai-advice',
+            'og_type' => 'article',
+            'robots' => 'noindex, follow',
+        ];
     }
 
     /**

@@ -30,7 +30,12 @@
 
     <div v-if="error" class="alert alert-danger">{{ error }}</div>
 
-    <article v-if="displaySections.length" class="content-card ai-advice-answer">
+    <div v-if="loadingConversation" class="content-card text-center py-4">
+      <i class="fas fa-spinner fa-spin me-2" />
+      Loading shared answer...
+    </div>
+
+    <article v-else-if="displaySections.length" class="content-card ai-advice-answer">
       <div class="d-flex flex-wrap align-items-start justify-content-between gap-3 mb-3">
         <h2 class="ai-advice-title mb-0">Answer</h2>
         <SocialShareBar
@@ -76,7 +81,7 @@ import PageStaticHeader from '../../components/shared/PageStaticHeader.vue';
 import SocialShareBar from '../../components/shared/SocialShareBar.vue';
 import { useVisitor } from '../../composables/useVisitor';
 import { applySeo, buildWebPageJsonLd } from '../../utils/seo';
-import { buildAiAdviceShareText } from '../../utils/socialShare';
+import { buildAiAdviceShareText, buildAiAdviceShareUrl } from '../../utils/socialShare';
 
 export default {
   name: 'AiAdvicePage',
@@ -122,6 +127,12 @@ export default {
         return true;
       });
     },
+    conversationRouteId() {
+      const paramId = this.$route.params.id;
+      const queryId = this.$route.query.id || this.$route.query.conversation;
+
+      return paramId || queryId ? String(paramId || queryId) : null;
+    },
     shareMeta() {
       return buildAiAdviceShareText({
         question: this.question,
@@ -137,13 +148,11 @@ export default {
       return this.shareMeta.text;
     },
     shareUrl() {
-      const path = this.conversationId ? `/ai-advice/${this.conversationId}` : '/ai-advice';
-
-      return `${window.location.origin}${path}`;
+      return buildAiAdviceShareUrl(this.conversationId);
     },
   },
   watch: {
-    '$route.params.id': {
+    conversationRouteId: {
       immediate: true,
       handler(id) {
         if (id) {
@@ -221,15 +230,16 @@ export default {
         return;
       }
 
-      const currentId = this.$route.params.id;
+      const id = String(this.conversationId);
+      const currentId = this.conversationRouteId;
 
-      if (String(currentId) === String(this.conversationId)) {
+      if (currentId === id) {
         return;
       }
 
       this.$router.replace({
-        name: 'ai-advice',
-        params: { id: String(this.conversationId) },
+        path: `/ai-advice/${id}`,
+        query: { id },
       }).catch(() => {});
     },
     updateSeo() {

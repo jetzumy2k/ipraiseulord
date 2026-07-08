@@ -7,7 +7,7 @@
         type="button"
         class="social-share-btn social-share-btn--native"
         title="Share"
-        @click="shareNative"
+        @click.stop.prevent="shareNative"
       >
         <i class="fas fa-share-alt" />
         <span v-if="!compact">Share</span>
@@ -19,7 +19,7 @@
         class="social-share-btn"
         :style="{ '--share-color': network.color }"
         :title="`Share on ${network.label}`"
-        @click="share(network.id)"
+        @click.stop.prevent="share(network.id)"
       >
         <i :class="network.icon" />
         <span v-if="!compact">{{ network.label }}</span>
@@ -43,6 +43,7 @@ export default {
   data() {
     return {
       copied: false,
+      sharing: false,
       networks: shareNetworks,
       supportsNativeShare: typeof navigator !== 'undefined' && !!navigator.share,
     };
@@ -52,11 +53,25 @@ export default {
       return {
         title: this.title,
         text: this.text,
-        url: this.url || window.location.href,
+        url: this.url != null && this.url !== '' ? this.url : window.location.href,
       };
     },
     async share(networkId) {
-      const success = await shareToNetwork(networkId, this.payload());
+      if (this.sharing) {
+        return;
+      }
+
+      this.sharing = true;
+
+      let success = false;
+
+      try {
+        success = await shareToNetwork(networkId, this.payload());
+      } finally {
+        window.setTimeout(() => {
+          this.sharing = false;
+        }, 800);
+      }
       if (networkId === 'copy' && success) {
         this.copied = true;
         window.setTimeout(() => {
@@ -64,8 +79,20 @@ export default {
         }, 2500);
       }
     },
-    shareNative() {
-      nativeShare(this.payload());
+    async shareNative() {
+      if (this.sharing) {
+        return;
+      }
+
+      this.sharing = true;
+
+      try {
+        await nativeShare(this.payload());
+      } finally {
+        window.setTimeout(() => {
+          this.sharing = false;
+        }, 800);
+      }
     },
   },
 };

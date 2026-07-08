@@ -6,8 +6,11 @@ export const shareNetworks = [
   { id: 'copy', label: 'Copy', icon: 'fas fa-link', color: '#5c2e2e' },
 ];
 
+let sharePopup = null;
+let shareInFlight = false;
+
 export function buildSharePayload({ title, text, url }) {
-  const pageUrl = url || window.location.href;
+  const pageUrl = (url != null && url !== '') ? url : window.location.href;
   const shareTitle = title || document.title;
   const shareText = (text || '').trim() || shareTitle;
 
@@ -30,7 +33,31 @@ function truncateForTweet(text, url, maxLength = 280) {
   return `${text.slice(0, Math.max(available, 0)).trim()}…`;
 }
 
+function openSharePopup(targetUrl) {
+  const windowName = 'praiseulord-social-share';
+
+  if (sharePopup && !sharePopup.closed) {
+    sharePopup.location.href = targetUrl;
+    sharePopup.focus();
+    return true;
+  }
+
+  sharePopup = window.open(targetUrl, windowName, 'width=640,height=480,scrollbars=yes,resizable=yes');
+
+  if (!sharePopup) {
+    window.location.assign(targetUrl);
+    return true;
+  }
+
+  sharePopup.focus();
+  return true;
+}
+
 export function shareToNetwork(networkId, payload) {
+  if (shareInFlight) {
+    return false;
+  }
+
   const { title, text, url, combined } = buildSharePayload(payload);
   const encodedUrl = encodeURIComponent(url);
   const encodedText = encodeURIComponent(text);
@@ -49,7 +76,15 @@ export function shareToNetwork(networkId, payload) {
   }
 
   if (networkId === 'native' && navigator.share) {
-    return navigator.share({ title, text, url }).catch(() => false);
+    shareInFlight = true;
+    return navigator.share({ title, text, url })
+      .then(() => true)
+      .catch(() => false)
+      .finally(() => {
+        window.setTimeout(() => {
+          shareInFlight = false;
+        }, 500);
+      });
   }
 
   const shareUrl = urls[networkId];
@@ -57,7 +92,12 @@ export function shareToNetwork(networkId, payload) {
     return false;
   }
 
-  window.open(shareUrl, '_blank', 'noopener,noreferrer,width=640,height=480');
+  shareInFlight = true;
+  openSharePopup(shareUrl);
+  window.setTimeout(() => {
+    shareInFlight = false;
+  }, 800);
+
   return true;
 }
 
@@ -131,6 +171,18 @@ export function formatShareReference(ref) {
   const version = ref.version ? ` (${ref.version})` : '';
 
   return `${reference}${version}`.trim() || ref.text || '';
+}
+
+export function buildAiAdviceShareUrl(conversationId) {
+  const origin = typeof window !== 'undefined' ? window.location.origin : '';
+
+  if (!conversationId) {
+    return `${origin}/ai-advice`;
+  }
+
+  const id = encodeURIComponent(String(conversationId));
+
+  return `${origin}/ai-advice/${id}?id=${id}`;
 }
 
 export function buildAiAdviceShareText({ question, answerSections, answer, references }) {
