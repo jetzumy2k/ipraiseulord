@@ -82,6 +82,15 @@ export async function nativeShare(payload) {
   }
 }
 
+export function buildSidebarQuoteShareText({ title, text, reference, version }) {
+  const ref = version ? `${reference} (${version})` : reference;
+
+  return {
+    title: title ? `${title} — ${reference}` : reference,
+    text: `"${String(text).trim()}"\n\n— ${ref}`,
+  };
+}
+
 export function buildBibleVerseShareText({ bookName, chapter, version, verses }) {
   const sorted = [...verses].sort((a, b) => a.verse_number - b.verse_number);
   const first = sorted[0]?.verse_number;
@@ -98,6 +107,46 @@ export function buildBibleVerseShareText({ bookName, chapter, version, verses })
     title: `${reference} (${version})`,
     text: `${body}\n\n— ${reference} (${version})`,
     reference,
+  };
+}
+
+export function formatShareReference(ref) {
+  if (typeof ref === 'string') {
+    return ref;
+  }
+
+  const reference = ref.reference || '';
+  const version = ref.version ? ` (${ref.version})` : '';
+
+  return `${reference}${version}`.trim() || ref.text || '';
+}
+
+export function buildAiAdviceShareText({ question, answerSections, answer, references }) {
+  const answerBody = answerSections?.length
+    ? answerSections.map((section) => section.text).filter(Boolean).join('\n\n')
+    : (answer || '').trim();
+
+  let text = `Question: ${question.trim()}\n\nAnswer: ${answerBody}`;
+
+  const seen = new Set();
+  const refs = (references || [])
+    .map(formatShareReference)
+    .filter((ref) => {
+      const key = ref.toLowerCase();
+      if (!ref || seen.has(key)) {
+        return false;
+      }
+      seen.add(key);
+      return true;
+    });
+
+  if (refs.length) {
+    text += `\n\nScripture References:\n${refs.join('\n')}`;
+  }
+
+  return {
+    title: 'AI Spiritual Advice',
+    text,
   };
 }
 

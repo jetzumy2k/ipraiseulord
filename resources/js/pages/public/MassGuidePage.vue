@@ -99,7 +99,13 @@
           :key="`${section.id}-${stepIndex}`"
           class="mass-step"
         >
-          <h4 class="mass-step-title">{{ step.title }}</h4>
+          <h4 class="mass-step-title">
+            {{ step.title }}<template v-if="step.reference"> (<router-link
+              v-if="step.bible_url"
+              :to="step.bible_url"
+              class="mass-step-ref-link"
+            >{{ step.reference }}</router-link><template v-else>{{ step.reference }}</template>)</template>
+          </h4>
 
           <div
             v-for="(part, partIndex) in step.parts"

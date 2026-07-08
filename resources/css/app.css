@@ -158,6 +158,50 @@
   border-top: 1px solid rgba(92, 46, 46, 0.08);
 }
 
+.public-site .site-nav__bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.65rem 0;
+}
+
+.public-site .site-nav__label {
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-size: 0.78rem;
+  color: var(--burgundy);
+}
+
+.public-site .site-nav__toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  padding: 0;
+  border: 1px solid rgba(92, 46, 46, 0.2);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--burgundy);
+  font-size: 1.1rem;
+  cursor: pointer;
+}
+
+.public-site .site-nav__toggle:hover {
+  background: rgba(92, 46, 46, 0.06);
+}
+
+.public-site .site-nav__menu {
+  display: none;
+  flex-direction: column;
+  padding-bottom: 0.5rem;
+}
+
+.public-site .site-nav__menu--open {
+  display: flex;
+}
+
 .public-site .site-nav .nav-link {
   color: var(--burgundy);
   font-weight: 600;
@@ -170,6 +214,99 @@
 .public-site .site-nav .nav-link.active,
 .public-site .site-nav .nav-link:hover {
   color: var(--burgundy-light);
+}
+
+@media (min-width: 992px) {
+  .public-site .site-nav__menu {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    padding-bottom: 0;
+  }
+}
+
+@media (max-width: 991.98px) {
+  .public-site .site-nav__menu .nav-item {
+    width: 100%;
+  }
+
+  .public-site .site-banner,
+  .public-site .site-banner--image,
+  .public-site .site-banner__content {
+    min-height: 260px;
+  }
+
+  .public-site .site-banner__content {
+    padding-top: 1rem !important;
+    padding-bottom: 1rem !important;
+  }
+
+  .public-site .site-banner__text-panel {
+    padding: 0.85rem 1rem;
+  }
+
+  .public-site .site-logo {
+    font-size: 1.85rem;
+  }
+
+  .public-site .site-banner--image .site-logo {
+    font-size: 2rem;
+  }
+
+  .public-site .site-banner--image .daily-psalm {
+    font-size: 0.9rem;
+  }
+
+  .public-site .site-banner--image .psalm-text {
+    font-size: 0.95rem;
+    line-height: 1.45;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .public-site .psalm-text {
+    font-size: 0.95rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .public-site .header-top {
+    font-size: 0.75rem;
+  }
+
+  .public-site .header-meta .mx-2 {
+    margin-left: 0.35rem !important;
+    margin-right: 0.35rem !important;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .public-site .site-banner,
+  .public-site .site-banner--image,
+  .public-site .site-banner__content {
+    min-height: 200px;
+  }
+
+  .public-site .site-logo {
+    font-size: 1.55rem;
+  }
+
+  .public-site .site-banner--image .site-logo {
+    font-size: 1.65rem;
+  }
+
+  .public-site .daily-psalm {
+    margin-top: 0.5rem !important;
+  }
+
+  .public-site .site-banner--image .psalm-text,
+  .public-site .psalm-text {
+    -webkit-line-clamp: 2;
+  }
 }
 
 /* Liturgical themes — header & footer colors from today's Mass color */
@@ -257,8 +394,18 @@
 }
 
 .public-site[class*='liturgical-theme-'] .site-header .site-logo,
-.public-site[class*='liturgical-theme-'] .site-header .site-nav .nav-link {
+.public-site[class*='liturgical-theme-'] .site-header .site-nav .nav-link,
+.public-site[class*='liturgical-theme-'] .site-header .site-nav__label {
   color: var(--liturgical-text);
+}
+
+.public-site[class*='liturgical-theme-'] .site-header .site-nav__toggle {
+  color: var(--liturgical-text);
+  border-color: var(--liturgical-border);
+}
+
+.public-site[class*='liturgical-theme-'] .site-header .site-nav__toggle:hover {
+  background: rgba(255, 255, 255, 0.08);
 }
 
 .public-site[class*='liturgical-theme-'] .site-header .site-nav .nav-link.active,
@@ -398,6 +545,12 @@
   font-size: 0.85rem;
   color: var(--text-muted);
   margin-top: 0.5rem;
+}
+
+.public-site .sidebar-share-bar {
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid rgba(92, 46, 46, 0.08);
 }
 
 .public-site .sidebar-verse-card + .sidebar-verse-card,
@@ -824,6 +977,16 @@
   font-weight: 600;
   color: var(--text);
   margin-bottom: 0.75rem;
+}
+
+.public-site .mass-step-ref-link {
+  color: var(--primary);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.public-site .mass-step-ref-link:hover {
+  color: var(--primary-dark, #4a2424);
 }
 
 .public-site .mass-part {

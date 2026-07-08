@@ -36,6 +36,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::prefix('install')->middleware('not-installed')->group(function () {
     Route::get('status', [InstallController::class, 'status']);
+    Route::get('progress', [InstallController::class, 'progress']);
     Route::get('requirements', [InstallController::class, 'requirements']);
     Route::post('test-database', [InstallController::class, 'testDatabase']);
     Route::post('run', [InstallController::class, 'run']);

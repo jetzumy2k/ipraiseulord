@@ -73,9 +73,15 @@ export default {
           this.copied = false;
         }, 2000);
       }
+      if (success) {
+        this.$emit('clear');
+      }
     },
-    shareNative() {
-      nativeShare(this.payload());
+    async shareNative() {
+      const success = await nativeShare(this.payload());
+      if (success) {
+        this.$emit('clear');
+      }
     },
   },
 };

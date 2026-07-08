@@ -39,6 +39,12 @@
               MySQL database, and creating your administrator account. The process takes a few
               minutes; Bible content import may take longer on first run.
             </p>
+            <div v-if="isLocalDev" class="alert alert-info small">
+              Local development tip: if you use <code>php artisan serve</code>, start it with
+              <code>--no-reload</code> so the server does not restart while the installer updates
+              <code>.env</code>. You can also run <code>php artisan app:install --force</code>
+              from the terminal instead.
+            </div>
             <div class="d-flex justify-content-end">
               <button type="button" class="btn btn-primary" @click="nextStep">
                 Let's go!
@@ -234,10 +240,11 @@
             <div class="text-center py-4">
               <i class="fas fa-cog fa-spin fa-3x text-primary mb-3" />
               <h2 class="h4">Installing Praise U Lord…</h2>
-              <p class="text-muted mb-0">
+              <p class="text-muted mb-2">
                 Creating database tables and importing Bible content. This may take several
                 minutes — please do not close this window.
               </p>
+              <p v-if="installMessage" class="small text-muted mb-0">{{ installMessage }}</p>
             </div>
           </section>
 
@@ -295,6 +302,8 @@ export default {
       loadingRequirements: false,
       testingDb: false,
       installing: false,
+      installMessage: '',
+      isLocalDev: false,
       dbTestOk: false,
       dbTestMessage: '',
       form: {
@@ -332,13 +341,28 @@ export default {
   },
   mounted() {
     this.detectLocalEnvironment();
+    this.resumeInstallIfRunning();
   },
   methods: {
     detectLocalEnvironment() {
       const host = window.location.hostname;
       if (host === 'localhost' || host === '127.0.0.1') {
+        this.isLocalDev = true;
         this.form.site.environment = 'local';
         this.form.site.debug = true;
+      }
+    },
+    async resumeInstallIfRunning() {
+      try {
+        const { data } = await axios.get('/install/progress');
+        if (['queued', 'running'].includes(data.status)) {
+          this.step = 5;
+          this.installing = true;
+          this.installMessage = data.message || '';
+          await this.pollInstallProgress();
+        }
+      } catch {
+        // Ignore — install page may not be reachable yet.
       }
     },
     async loadRequirements() {
@@ -375,8 +399,16 @@ export default {
 
       this.installing = true;
       this.error = null;
+      this.installMessage = 'Starting installation…';
+
       try {
         const { data } = await axios.post('/install/run', this.form);
+
+        if (data.async) {
+          await this.pollInstallProgress();
+          return;
+        }
+
         if (data.success) {
           this.step = 6;
         } else {
@@ -386,15 +418,55 @@ export default {
       } catch (err) {
         const payload = err.response?.data;
 
-        if (payload?.errors) {
-          this.error = Object.values(payload.errors).flat().join(' ');
-        } else {
-          this.error = payload?.message || payload?.hint || 'Installation failed.';
+        if (payload?.async) {
+          await this.pollInstallProgress();
+          return;
         }
 
-        this.step = 4;
+        if (payload?.errors) {
+          this.error = Object.values(payload.errors).flat().join(' ');
+        } else if (err.code === 'ERR_NETWORK' || !err.response) {
+          this.error = 'Lost connection to the server while installation was starting. '
+            + 'The install may still be running in the background — wait a moment and refresh this page.';
+          await this.resumeInstallIfRunning();
+          if (this.step !== 5) {
+            this.step = 4;
+          }
+        } else {
+          this.error = payload?.message || payload?.hint || 'Installation failed.';
+          this.step = 4;
+        }
       } finally {
-        this.installing = false;
+        if (this.step !== 5) {
+          this.installing = false;
+        }
+      }
+    },
+    async pollInstallProgress() {
+      while (this.installing) {
+        try {
+          const { data } = await axios.get('/install/progress');
+          this.installMessage = data.message || '';
+
+          if (data.status === 'complete') {
+            this.step = 6;
+            this.installing = false;
+            return;
+          }
+
+          if (data.status === 'failed') {
+            this.error = data.message || 'Installation failed.';
+            this.step = 4;
+            this.installing = false;
+            return;
+          }
+        } catch {
+          // Keep polling — the dev server may restart while .env is updated.
+        }
+
+        await new Promise((resolve) => {
+          window.setTimeout(resolve, 2000);
+        });
       }
     },
     nextStep() {

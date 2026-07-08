@@ -17,7 +17,22 @@ class InstallController extends Controller
     {
         return response()->json([
             'installed' => $this->installer->isInstalled(),
+            'job_running' => $this->installer->isInstallJobRunning(),
         ]);
+    }
+
+    public function progress(): JsonResponse
+    {
+        $progress = $this->installer->getInstallProgress();
+
+        if ($progress === null) {
+            return response()->json([
+                'status' => 'idle',
+                'message' => 'No installation in progress.',
+            ]);
+        }
+
+        return response()->json($progress);
     }
 
     public function requirements(): JsonResponse
@@ -64,7 +79,14 @@ class InstallController extends Controller
             'admin.password_confirmation' => ['required', 'string', 'min:8'],
         ]);
 
-        $result = $this->installer->runInstallation([
+        if ($this->installer->isInstallJobRunning()) {
+            return response()->json([
+                'async' => true,
+                'message' => 'Installation is already in progress.',
+            ], 202);
+        }
+
+        $this->installer->queueWebInstallation([
             'database' => $validated['database'],
             'site' => $validated['site'],
             'admin' => [
@@ -74,6 +96,9 @@ class InstallController extends Controller
             ],
         ]);
 
-        return response()->json($result, $result['success'] ? 200 : 422);
+        return response()->json([
+            'async' => true,
+            'message' => 'Installation started. This may take several minutes.',
+        ], 202);
     }
 }

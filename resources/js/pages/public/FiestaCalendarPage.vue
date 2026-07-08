@@ -94,7 +94,16 @@
       </div>
 
       <section class="content-card fiesta-events-panel">
-        <h2 class="section-title">{{ selectedDayLabel }}</h2>
+        <div class="d-flex flex-wrap align-items-start justify-content-between gap-3 mb-3">
+          <h2 class="section-title mb-0">{{ selectedDayLabel }}</h2>
+          <SocialShareBar
+            v-if="selectedEvents.length"
+            :title="shareTitle"
+            :text="shareText"
+            :url="shareUrl"
+            compact
+          />
+        </div>
         <p v-if="!selectedEvents.length" class="text-muted mb-0">No fiestas scheduled for this day.</p>
         <ul v-else class="fiesta-events-list">
           <li v-for="event in selectedEvents" :key="`${event.id}-${event.date}`" class="fiesta-event">
@@ -119,6 +128,7 @@
 
 <script>
 import PageStaticHeader from '../../components/shared/PageStaticHeader.vue';
+import SocialShareBar from '../../components/shared/SocialShareBar.vue';
 
 const monthNames = [
   'January', 'February', 'March', 'April', 'May', 'June',
@@ -127,7 +137,7 @@ const monthNames = [
 
 export default {
   name: 'FiestaCalendarPage',
-  components: { PageStaticHeader },
+  components: { PageStaticHeader, SocialShareBar },
   data() {
     const today = new Date();
 
@@ -216,11 +226,75 @@ export default {
         year: 'numeric',
       });
     },
+    shareTitle() {
+      if (!this.selectedEvents.length) {
+        return '';
+      }
+
+      if (this.selectedEvents.length === 1) {
+        return `${this.selectedEvents[0].title} — Fiesta Calendar`;
+      }
+
+      return `Fiestas on ${this.selectedDayLabel}`;
+    },
+    shareText() {
+      if (!this.selectedEvents.length) {
+        return '';
+      }
+
+      const eventLines = this.selectedEvents.map((event) => {
+        let line = event.title;
+
+        if (event.honoree_name && event.honoree_name !== event.title) {
+          line += ` (${event.honoree_name})`;
+        }
+
+        if (event.liturgical_rank) {
+          line += ` · ${this.formatRank(event.liturgical_rank)}`;
+        }
+
+        if (event.description) {
+          line += ` — ${event.description}`;
+        }
+
+        return line;
+      });
+
+      return `${eventLines.join('\n\n')}\n\n${this.selectedDayLabel}`;
+    },
+    shareUrl() {
+      const params = new URLSearchParams({
+        year: String(this.year),
+        month: String(this.month),
+        day: String(this.selectedDay),
+      });
+
+      return `${window.location.origin}/fiesta-calendar?${params.toString()}`;
+    },
   },
   mounted() {
+    this.applyQuerySelection();
     this.loadEvents();
   },
   methods: {
+    applyQuerySelection() {
+      const params = new URLSearchParams(window.location.search);
+      const year = Number(params.get('year'));
+      const month = Number(params.get('month'));
+      const day = Number(params.get('day'));
+
+      if (year >= 1900 && year <= 2100) {
+        this.year = year;
+      }
+
+      if (month >= 1 && month <= 12) {
+        this.month = month;
+      }
+
+      if (day >= 1 && day <= 31) {
+        this.selectedDay = day;
+      }
+    },
     async loadEvents() {
       this.loading = true;
 

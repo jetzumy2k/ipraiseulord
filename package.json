@@ -5,7 +5,7 @@
     "scripts": {
         "build": "vite build",
         "dev": "vite",
-        "serve": "php artisan serve --host=127.0.0.1 --port=8888",
+        "serve": "php artisan serve --host=127.0.0.1 --port=8888 --no-reload",
         "start": "concurrently -n vite,laravel -c blue,green \"npm run dev\" \"npm run serve\"",
         "install:server": "npm install --legacy-peer-deps --ignore-scripts"
     },

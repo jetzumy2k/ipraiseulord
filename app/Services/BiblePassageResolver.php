@@ -31,8 +31,109 @@ class BiblePassageResolver
         '3 John' => '3 John',
     ];
 
+    /** @var array<string, string> */
+    protected array $bookAbbreviations = [
+        'Genesis' => 'Gen',
+        'Exodus' => 'Exod',
+        'Leviticus' => 'Lev',
+        'Numbers' => 'Num',
+        'Deuteronomy' => 'Deut',
+        'Joshua' => 'Josh',
+        'Judges' => 'Judg',
+        'Ruth' => 'Ruth',
+        '1 Samuel' => '1 Sam',
+        '2 Samuel' => '2 Sam',
+        '1 Kings' => '1 Kgs',
+        '2 Kings' => '2 Kgs',
+        '1 Chronicles' => '1 Chr',
+        '2 Chronicles' => '2 Chr',
+        'Ezra' => 'Ezra',
+        'Nehemiah' => 'Neh',
+        'Tobit' => 'Tob',
+        'Judith' => 'Jdt',
+        'Esther' => 'Esth',
+        '1 Maccabees' => '1 Macc',
+        '2 Maccabees' => '2 Macc',
+        'Job' => 'Job',
+        'Psalms' => 'Ps',
+        'Psalm' => 'Ps',
+        'Proverbs' => 'Prov',
+        'Ecclesiastes' => 'Eccl',
+        'Song of Songs' => 'Song',
+        'Wisdom' => 'Wis',
+        'Sirach' => 'Sir',
+        'Isaiah' => 'Isa',
+        'Jeremiah' => 'Jer',
+        'Lamentations' => 'Lam',
+        'Baruch' => 'Bar',
+        'Ezekiel' => 'Ezek',
+        'Daniel' => 'Dan',
+        'Hosea' => 'Hos',
+        'Joel' => 'Joel',
+        'Amos' => 'Amos',
+        'Obadiah' => 'Obad',
+        'Jonah' => 'Jonah',
+        'Micah' => 'Mic',
+        'Nahum' => 'Nah',
+        'Habakkuk' => 'Hab',
+        'Zephaniah' => 'Zeph',
+        'Haggai' => 'Hag',
+        'Zechariah' => 'Zech',
+        'Malachi' => 'Mal',
+        'Matthew' => 'Matt',
+        'Mark' => 'Mark',
+        'Luke' => 'Luke',
+        'John' => 'John',
+        'Acts' => 'Acts',
+        'Romans' => 'Rom',
+        '1 Corinthians' => '1 Cor',
+        '2 Corinthians' => '2 Cor',
+        'Galatians' => 'Gal',
+        'Ephesians' => 'Eph',
+        'Philippians' => 'Phil',
+        'Colossians' => 'Col',
+        '1 Thessalonians' => '1 Thess',
+        '2 Thessalonians' => '2 Thess',
+        '1 Timothy' => '1 Tim',
+        '2 Timothy' => '2 Tim',
+        'Titus' => 'Titus',
+        'Philemon' => 'Phlm',
+        'Hebrews' => 'Heb',
+        'James' => 'Jas',
+        '1 Peter' => '1 Pet',
+        '2 Peter' => '2 Pet',
+        '1 John' => '1 John',
+        '2 John' => '2 John',
+        '3 John' => '3 John',
+        'Jude' => 'Jude',
+        'Revelation' => 'Rev',
+    ];
+
     /** @var array<int, array<string, BibleBook>>|null */
     protected ?array $booksByVersion = null;
+
+    public function buildUrl(string $reference, string $versionAbbrev = 'NABRE'): ?string
+    {
+        $reference = trim($reference);
+
+        if ($reference === '') {
+            return null;
+        }
+
+        if (preg_match('/^psalm\s+/i', $reference)) {
+            return $this->buildPsalmUrl($reference, $versionAbbrev);
+        }
+
+        if (! preg_match('/^(.+?)\s+(\d+)\s*:\s*(.+)$/u', $reference, $matches)) {
+            return null;
+        }
+
+        $book = trim($matches[1]);
+        $chapter = (int) $matches[2];
+        $firstVerse = $this->firstVerseFromPart(trim($matches[3]));
+
+        return $this->buildUrlFromParts($this->bookAliases[$book] ?? $book, $chapter, $firstVerse, $versionAbbrev);
+    }
 
     public function resolve(string $reference, string $versionAbbrev = 'RSVCE'): ?string
     {
@@ -218,5 +319,70 @@ class BiblePassageResolver
     protected function normalizeBookName(string $name): string
     {
         return strtolower(preg_replace('/\s+/', ' ', trim($name)) ?? trim($name));
+    }
+
+    protected function buildPsalmUrl(string $reference, string $versionAbbrev): ?string
+    {
+        if (preg_match('/^psalm\s+(\d+)\s*:\s*(.+)$/iu', $reference, $matches)) {
+            $chapter = (int) $matches[1];
+            $firstVerse = $this->firstVerseFromPart(trim($matches[2]));
+        } elseif (preg_match('/^psalm\s+(\d+)$/iu', $reference, $simple)) {
+            $chapter = (int) $simple[1];
+            $firstVerse = 1;
+        } else {
+            return null;
+        }
+
+        return $this->buildUrlFromParts('Psalms', $chapter, $firstVerse, $versionAbbrev);
+    }
+
+    protected function buildUrlFromParts(string $bookName, int $chapter, int $verse, string $versionAbbrev): ?string
+    {
+        $canonicalBook = $this->bookAliases[$bookName] ?? $bookName;
+        $bookSlug = $this->bookAbbreviations[$canonicalBook] ?? null;
+
+        if (! $bookSlug) {
+            foreach ($this->versionCandidates($versionAbbrev) as $abbreviation) {
+                $version = BibleVersion::query()->where('abbreviation', $abbreviation)->first();
+
+                if (! $version) {
+                    continue;
+                }
+
+                $book = $this->findBook($version->id, $bookName);
+
+                if (! $book) {
+                    continue;
+                }
+
+                $bookSlug = $book->abbreviation ?: (string) $book->id;
+                $versionAbbrev = $abbreviation;
+
+                break;
+            }
+        }
+
+        if (! $bookSlug) {
+            return null;
+        }
+
+        return "/bible/{$versionAbbrev}/{$bookSlug}/{$chapter}#v{$verse}";
+    }
+
+    /**
+     * @return array<int, string>
+     */
+    protected function versionCandidates(string $preferred): array
+    {
+        return array_values(array_unique([$preferred, 'NABRE', 'RSVCE', 'DR']));
+    }
+
+    protected function firstVerseFromPart(string $versePart): int
+    {
+        if (preg_match('/^(\d+)/', $versePart, $matches)) {
+            return (int) $matches[1];
+        }
+
+        return 1;
     }
 }

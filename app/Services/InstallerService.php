@@ -8,11 +8,16 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Schema;
 use PDO;
 use PDOException;
+use Symfony\Component\Process\Process;
 use Throwable;
 
 class InstallerService
 {
     public const LOCK_FILE = 'installed.lock';
+
+    public const WEB_PAYLOAD_FILE = 'install-payload.json';
+
+    public const WEB_PROGRESS_FILE = 'install-progress.json';
 
     public function isInstalled(): bool
     {
@@ -80,6 +85,64 @@ class InstallerService
     public function lockPath(): string
     {
         return storage_path('app/'.self::LOCK_FILE);
+    }
+
+    public function webPayloadPath(): string
+    {
+        return storage_path('app/'.self::WEB_PAYLOAD_FILE);
+    }
+
+    public function webProgressPath(): string
+    {
+        return storage_path('app/'.self::WEB_PROGRESS_FILE);
+    }
+
+    /**
+     * @return array<string, mixed>|null
+     */
+    public function getInstallProgress(): ?array
+    {
+        if (! File::exists($this->webProgressPath())) {
+            return null;
+        }
+
+        $progress = json_decode(File::get($this->webProgressPath()), true);
+
+        return is_array($progress) ? $progress : null;
+    }
+
+    public function isInstallJobRunning(): bool
+    {
+        $progress = $this->getInstallProgress();
+
+        return in_array($progress['status'] ?? '', ['queued', 'running'], true);
+    }
+
+    /**
+     * @param  array<string, mixed>  $extra
+     */
+    public function writeInstallProgress(string $status, string $message, array $extra = []): void
+    {
+        File::put($this->webProgressPath(), json_encode(array_merge([
+            'status' => $status,
+            'message' => $message,
+            'updated_at' => now()->toIso8601String(),
+        ], $extra), JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+    }
+
+    /**
+     * @param  array<string, mixed>  $data
+     */
+    public function queueWebInstallation(array $data): void
+    {
+        File::put($this->webPayloadPath(), json_encode($data, JSON_UNESCAPED_UNICODE));
+        $this->writeInstallProgress('queued', 'Starting installation…');
+
+        $process = new Process([PHP_BINARY, base_path('artisan'), 'app:install-web']);
+        $process->setWorkingDirectory(base_path());
+        $process->setTimeout(null);
+        $process->disableOutput();
+        $process->start();
     }
 
     /**

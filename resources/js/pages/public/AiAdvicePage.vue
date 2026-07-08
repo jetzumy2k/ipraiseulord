@@ -31,7 +31,15 @@
     <div v-if="error" class="alert alert-danger">{{ error }}</div>
 
     <article v-if="displaySections.length" class="content-card ai-advice-answer">
-      <h2 class="ai-advice-title">Answer</h2>
+      <div class="d-flex flex-wrap align-items-start justify-content-between gap-3 mb-3">
+        <h2 class="ai-advice-title mb-0">Answer</h2>
+        <SocialShareBar
+          :title="shareTitle"
+          :text="shareText"
+          :url="shareUrl"
+          compact
+        />
+      </div>
 
       <div class="ai-advice-body">
         <template v-for="(section, index) in displaySections" :key="index">
@@ -65,11 +73,13 @@
 
 <script>
 import PageStaticHeader from '../../components/shared/PageStaticHeader.vue';
+import SocialShareBar from '../../components/shared/SocialShareBar.vue';
 import { useVisitor } from '../../composables/useVisitor';
+import { buildAiAdviceShareText } from '../../utils/socialShare';
 
 export default {
   name: 'AiAdvicePage',
-  components: { PageStaticHeader },
+  components: { PageStaticHeader, SocialShareBar },
   data() {
     return {
       question: '',
@@ -108,6 +118,23 @@ export default {
         seen.add(key);
         return true;
       });
+    },
+    shareMeta() {
+      return buildAiAdviceShareText({
+        question: this.question,
+        answerSections: this.answerSections,
+        answer: this.answer,
+        references: this.references,
+      });
+    },
+    shareTitle() {
+      return this.shareMeta.title;
+    },
+    shareText() {
+      return this.shareMeta.text;
+    },
+    shareUrl() {
+      return `${window.location.origin}/ai-advice`;
     },
   },
   methods: {

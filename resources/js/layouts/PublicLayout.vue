@@ -34,9 +34,31 @@
       </div>
       <nav class="site-nav">
         <div class="container">
-          <ul class="nav justify-content-center flex-wrap">
+          <div class="site-nav__bar d-lg-none">
+            <span class="site-nav__label">Menu</span>
+            <button
+              type="button"
+              class="site-nav__toggle"
+              :aria-expanded="navOpen"
+              aria-controls="site-nav-menu"
+              @click="navOpen = !navOpen"
+            >
+              <span class="visually-hidden">Toggle navigation</span>
+              <i :class="navOpen ? 'fas fa-times' : 'fas fa-bars'" aria-hidden="true" />
+            </button>
+          </div>
+          <ul
+            id="site-nav-menu"
+            class="nav site-nav__menu justify-content-lg-center flex-lg-wrap"
+            :class="{ 'site-nav__menu--open': navOpen }"
+          >
             <li v-for="item in filteredNavItems" :key="item.to" class="nav-item">
-              <router-link :to="item.to" class="nav-link" active-class="active">
+              <router-link
+                :to="item.to"
+                class="nav-link"
+                active-class="active"
+                @click="closeNav"
+              >
                 {{ item.label }}
               </router-link>
             </li>
@@ -48,13 +70,21 @@
     <main class="site-main">
       <div class="container py-4">
         <div class="row g-4">
-          <aside class="col-lg-3 order-lg-1">
+          <aside class="col-lg-3 order-2 order-lg-1">
             <div class="sidebar-card">
               <h3 class="sidebar-title">Daily Proverb</h3>
               <blockquote v-if="proverb" class="proverb-quote">
                 <p>{{ proverb.text }}</p>
                 <footer>{{ proverb.reference }}</footer>
               </blockquote>
+              <SocialShareBar
+                v-if="proverb"
+                class="sidebar-share-bar"
+                :title="proverbShareTitle"
+                :text="proverbShareText"
+                :url="proverbShareUrl"
+                compact
+              />
             </div>
             <SidebarVerseWidget title="Psalm" scope="psalms" />
             <div v-for="ad in sidebarAds" :key="ad.id" class="sidebar-card ad-card" v-html="renderAd(ad)" />
@@ -66,11 +96,11 @@
             />
           </aside>
 
-          <section class="col-lg-6 order-lg-2">
+          <section class="col-lg-6 order-1 order-lg-2">
             <router-view />
           </section>
 
-          <aside class="col-lg-3 order-lg-3">
+          <aside class="col-lg-3 order-3 order-lg-3">
             <SidebarVerseWidget title="Old Testament" scope="old-testament" />
             <SidebarVerseWidget title="New Testament" scope="new-testament" />
             <div v-for="ad in rightAds" :key="ad.id" class="sidebar-card ad-card" v-html="renderAd(ad)" />
@@ -107,8 +137,10 @@
 <script>
 import DonationWidget from '../components/shared/DonationWidget.vue';
 import SidebarVerseWidget from '../components/shared/SidebarVerseWidget.vue';
+import SocialShareBar from '../components/shared/SocialShareBar.vue';
 import { useVisitor } from '../composables/useVisitor';
 import { initSeoDefaults, applyRouteSeo } from '../utils/seo';
+import { buildSidebarQuoteShareText } from '../utils/socialShare';
 import { resolveBannerWithFallback } from '../config/banner';
 import { liturgicalThemeClass as getLiturgicalThemeClass } from '../utils/liturgicalColors';
 
@@ -116,7 +148,7 @@ const BANNER_VERSE_INTERVAL_MS = 5 * 60 * 1000;
 
 export default {
   name: 'PublicLayout',
-  components: { DonationWidget, SidebarVerseWidget },
+  components: { DonationWidget, SidebarVerseWidget, SocialShareBar },
   data() {
     return {
       settings: null,
@@ -131,6 +163,7 @@ export default {
       donationsEnabled: false,
       socialLinks: [],
       liturgicalColor: null,
+      navOpen: false,
       navItems: [
         { to: '/', label: 'Home' },
         { to: '/bible', label: 'Bible' },
@@ -210,10 +243,31 @@ export default {
         opacity,
       };
     },
+    proverbSharePayload() {
+      if (!this.proverb) {
+        return { title: '', text: '' };
+      }
+
+      return buildSidebarQuoteShareText({
+        title: 'Daily Proverb',
+        text: this.proverb.text,
+        reference: this.proverb.reference,
+      });
+    },
+    proverbShareTitle() {
+      return this.proverbSharePayload.title;
+    },
+    proverbShareText() {
+      return this.proverbSharePayload.text;
+    },
+    proverbShareUrl() {
+      return window.location.href;
+    },
   },
   watch: {
     '$route'() {
       this.trackVisit();
+      this.navOpen = false;
     },
   },
   mounted() {
@@ -300,6 +354,9 @@ export default {
         youtube: 'fab fa-youtube',
       };
       return map[platform?.toLowerCase()] || 'fas fa-link';
+    },
+    closeNav() {
+      this.navOpen = false;
     },
     trackVisit() {
       const { visitorId } = useVisitor();

@@ -7,6 +7,10 @@ use Carbon\Carbon;
 
 class MassOrderService
 {
+    public function __construct(
+        protected BiblePassageResolver $biblePassageResolver,
+    ) {}
+
     public function build(MassGuide $mass): array
     {
         $date = Carbon::parse($mass->liturgical_date);
@@ -101,7 +105,7 @@ class MassOrderService
         $steps = [];
 
         if ($mass->first_reading_text) {
-            $steps[] = $this->step('First Reading'.($mass->first_reading_reference ? " ({$mass->first_reading_reference})" : ''), [
+            $steps[] = $this->readingStep('First Reading', $mass->first_reading_reference, [
                 $this->part('reader', 'A reading from the Book of '.($mass->first_reading_reference ? explode(' ', $mass->first_reading_reference)[0] : 'Scripture').'.'),
                 $this->part('reading', $mass->first_reading_text),
                 $this->part('all', 'The word of the Lord.'),
@@ -110,13 +114,13 @@ class MassOrderService
         }
 
         if ($mass->responsorial_psalm_text) {
-            $steps[] = $this->step('Responsorial Psalm'.($mass->responsorial_psalm_reference ? " ({$mass->responsorial_psalm_reference})" : ''), [
+            $steps[] = $this->readingStep('Responsorial Psalm', $mass->responsorial_psalm_reference, [
                 $this->part('reading', $mass->responsorial_psalm_text),
             ]);
         }
 
         if ($includeSecondReading && $mass->second_reading_text) {
-            $steps[] = $this->step('Second Reading'.($mass->second_reading_reference ? " ({$mass->second_reading_reference})" : ''), [
+            $steps[] = $this->readingStep('Second Reading', $mass->second_reading_reference, [
                 $this->part('reader', 'A reading from the Letter of '.($mass->second_reading_reference ? explode(' ', $mass->second_reading_reference)[0] : 'the Apostle').'.'),
                 $this->part('reading', $mass->second_reading_text),
                 $this->part('all', 'The word of the Lord.'),
@@ -125,7 +129,7 @@ class MassOrderService
         }
 
         if ($includeAlleluia && $mass->alleluia_text) {
-            $steps[] = $this->step('Gospel Acclamation'.($mass->alleluia_reference ? " ({$mass->alleluia_reference})" : ''), [
+            $steps[] = $this->readingStep('Gospel Acclamation', $mass->alleluia_reference, [
                 $this->part('all', $mass->alleluia_text),
             ]);
         } elseif (! $includeAlleluia && $mass->gospel_reference) {
@@ -135,7 +139,7 @@ class MassOrderService
         }
 
         if ($mass->gospel_text) {
-            $steps[] = $this->step('Gospel'.($mass->gospel_reference ? " ({$mass->gospel_reference})" : ''), [
+            $steps[] = $this->readingStep('Gospel', $mass->gospel_reference, [
                 $this->part('priest', 'The Lord be with you.'),
                 $this->part('people', 'And with your spirit.'),
                 $this->part('priest', 'A reading from the holy Gospel according to '.($mass->gospel_reference ? explode(' ', $mass->gospel_reference)[0] : 'Matthew').'.'),
@@ -271,6 +275,22 @@ class MassOrderService
                 ]),
             ],
         ];
+    }
+
+    /**
+     * @param  array<int, array<string, string>>  $parts
+     * @return array<string, mixed>
+     */
+    protected function readingStep(string $title, ?string $reference, array $parts): array
+    {
+        $step = $this->step($title, $parts);
+
+        if (filled($reference)) {
+            $step['reference'] = $reference;
+            $step['bible_url'] = $this->biblePassageResolver->buildUrl($reference);
+        }
+
+        return $step;
     }
 
     /**
