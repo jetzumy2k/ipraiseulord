@@ -29,7 +29,7 @@
         "language": "en",
         "canon": "catholic",
         "description": "Classic Catholic English translation (public domain).",
-        "import": { "strategy": "douay" }
+        "import": { "strategy": "douay", "supplement_from": "KJV" }
     },
     {
         "name": "Basic English Bible",

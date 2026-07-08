@@ -42,7 +42,12 @@ const publicChildren = [
     component: () => import('../pages/public/PrayerDetailPage.vue'),
     meta: withSeo('prayer-detail', {}),
   },
-  { path: 'ai-advice', name: 'ai-advice', component: () => import('../pages/public/AiAdvicePage.vue'), meta: withSeo('ai-advice', {}) },
+  {
+    path: 'ai-advice/:id?',
+    name: 'ai-advice',
+    component: () => import('../pages/public/AiAdvicePage.vue'),
+    meta: withSeo('ai-advice', {}),
+  },
   {
     path: 'about',
     name: 'about',

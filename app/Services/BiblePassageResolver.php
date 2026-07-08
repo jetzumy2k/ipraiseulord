@@ -162,6 +162,71 @@ class BiblePassageResolver
         return $verses->pluck('text')->implode(' ');
     }
 
+    /**
+     * @return array{reference: string, text: string, version: string}|null
+     */
+    public function resolveToReference(string $reference, string $versionAbbrev = 'RSVCE'): ?array
+    {
+        $reference = trim($reference);
+
+        if ($reference === '') {
+            return null;
+        }
+
+        $text = $this->resolve($reference, $versionAbbrev);
+
+        if ($text === null || $text === '') {
+            foreach ($this->versionCandidates($versionAbbrev) as $candidate) {
+                if ($candidate === $versionAbbrev) {
+                    continue;
+                }
+
+                $text = $this->resolve($reference, $candidate);
+
+                if ($text !== null && $text !== '') {
+                    $versionAbbrev = $candidate;
+                    break;
+                }
+            }
+        }
+
+        if ($text === null || $text === '') {
+            return null;
+        }
+
+        return [
+            'reference' => $reference,
+            'text' => $text,
+            'version' => $versionAbbrev,
+        ];
+    }
+
+    /**
+     * @param  array<int, string>  $references
+     * @return array<int, array{reference: string, text: string, version: string}>
+     */
+    public function resolveMany(array $references, string $versionAbbrev = 'RSVCE'): array
+    {
+        $resolved = [];
+
+        foreach ($references as $reference) {
+            if (! is_string($reference) || trim($reference) === '') {
+                continue;
+            }
+
+            $entry = $this->resolveToReference(trim($reference), $versionAbbrev);
+
+            if ($entry !== null) {
+                $resolved[] = $entry;
+            }
+        }
+
+        return collect($resolved)
+            ->unique('reference')
+            ->values()
+            ->all();
+    }
+
     public function resolvePsalmResponse(string $reference, ?string $refrain = null, string $versionAbbrev = 'RSVCE'): ?string
     {
         $passage = $this->resolve($reference, $versionAbbrev);

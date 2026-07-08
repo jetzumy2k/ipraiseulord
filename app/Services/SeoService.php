@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\AiConversation;
 use App\Models\Novena;
 use App\Models\PageBanner;
 use App\Models\Prayer;
@@ -217,6 +218,27 @@ class SeoService
                     'path' => $path,
                     'route_key' => 'prayer-detail',
                     'og_type' => 'article',
+                ], $request);
+            }
+        }
+
+        if (preg_match('#^/ai-advice/(\d+)$#', $path, $matches)) {
+            $conversation = AiConversation::query()->find($matches[1]);
+
+            if ($conversation) {
+                $question = trim(strip_tags($conversation->question));
+                $answer = trim(strip_tags($conversation->answer));
+                $description = $question !== ''
+                    ? 'Q: '.$this->excerpt($question, '', 80).' — '.$this->excerpt($answer, '', 80)
+                    : $this->excerpt($answer, 'Scripture-based spiritual guidance on '.$this->siteName().'.', 160);
+
+                return $this->buildMeta([
+                    'title' => 'AI Spiritual Advice',
+                    'description' => $description,
+                    'path' => $path,
+                    'route_key' => 'ai-advice',
+                    'og_type' => 'article',
+                    'robots' => 'noindex, follow',
                 ], $request);
             }
         }

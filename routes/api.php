@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\Api\InstallController;
 use App\Http\Controllers\Api\AdInvoiceController;
 use App\Http\Controllers\Api\AdvertisementController;
 use App\Http\Controllers\Api\AiAdviceController;
@@ -9,18 +8,19 @@ use App\Http\Controllers\Api\BibleBookController;
 use App\Http\Controllers\Api\BibleChapterController;
 use App\Http\Controllers\Api\BibleVerseController;
 use App\Http\Controllers\Api\BibleVersionController;
+use App\Http\Controllers\Api\CaptchaController;
 use App\Http\Controllers\Api\ContactMessageController;
 use App\Http\Controllers\Api\DailyPsalmController;
 use App\Http\Controllers\Api\DashboardController;
 use App\Http\Controllers\Api\DonationSettingController;
 use App\Http\Controllers\Api\FiestaController;
+use App\Http\Controllers\Api\InstallController;
 use App\Http\Controllers\Api\MassGuideController;
 use App\Http\Controllers\Api\NovenaController;
 use App\Http\Controllers\Api\PageBannerController;
 use App\Http\Controllers\Api\PageVisitController;
 use App\Http\Controllers\Api\PrayerController;
 use App\Http\Controllers\Api\ProverbController;
-use App\Http\Controllers\Api\CaptchaController;
 use App\Http\Controllers\Api\PublicController;
 use App\Http\Controllers\Api\SeoSettingsController;
 use App\Http\Controllers\Api\SocialMediaSettingController;
@@ -64,6 +64,7 @@ Route::prefix('public')->group(function () {
     Route::post('contact', [PublicController::class, 'submitContact']);
 
     Route::post('ai/ask', [AiAdviceController::class, 'ask']);
+    Route::get('ai/conversations/{id}', [AiAdviceController::class, 'show'])->whereNumber('id');
     Route::get('ai/search', [AiAdviceController::class, 'searchVerses']);
 
     Route::get('bible/languages', [PublicController::class, 'bibleLanguages']);

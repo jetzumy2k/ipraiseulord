@@ -169,6 +169,7 @@ class BibleTextImportService
         '2 Tesalonica' => '2 Thessalonians',
         '1 Timoteo' => '1 Timothy',
         '2 Timoteo' => '2 Timothy',
+        '3 Timoteo' => '2 Timothy',
         'Tito' => 'Titus',
         'Filemon' => 'Philemon',
         'Hebreo' => 'Hebrews',
@@ -182,6 +183,83 @@ class BibleTextImportService
     ];
 
     /** @var array<string, string> */
+    protected array $odrBookSlugs = [
+        'Genesis' => 'genesis',
+        'Exodus' => 'exodus',
+        'Leviticus' => 'leviticus',
+        'Numbers' => 'numbers',
+        'Deuteronomy' => 'deuteronomy',
+        'Joshua' => 'josue',
+        'Judges' => 'judges',
+        'Ruth' => 'ruth',
+        '1 Samuel' => '1-kings',
+        '2 Samuel' => '2-kings',
+        '1 Kings' => '3-kings',
+        '2 Kings' => '4-kings',
+        '1 Chronicles' => '1-paralipomenon',
+        '2 Chronicles' => '2-paralipomenon',
+        'Ezra' => '1-esdras',
+        'Nehemiah' => '2-esdras',
+        'Tobit' => 'tobias',
+        'Judith' => 'judith',
+        'Esther' => 'esther',
+        '1 Maccabees' => '1-machabees',
+        '2 Maccabees' => '2-machabees',
+        'Job' => 'job',
+        'Psalms' => 'psalms',
+        'Proverbs' => 'proverbs',
+        'Ecclesiastes' => 'ecclesiastes',
+        'Song of Songs' => 'canticle-of-canticles',
+        'Wisdom' => 'wisdom',
+        'Sirach' => 'ecclesiasticus',
+        'Isaiah' => 'isaie',
+        'Jeremiah' => 'jeremie',
+        'Lamentations' => 'lamentations',
+        'Baruch' => 'baruch',
+        'Ezekiel' => 'ezechiel',
+        'Daniel' => 'daniel',
+        'Hosea' => 'osee',
+        'Joel' => 'joel',
+        'Amos' => 'amos',
+        'Obadiah' => 'abdias',
+        'Jonah' => 'jonas',
+        'Micah' => 'micheas',
+        'Nahum' => 'nahum',
+        'Habakkuk' => 'habacuc',
+        'Zephaniah' => 'sophonias',
+        'Haggai' => 'aggeus',
+        'Zechariah' => 'zacharias',
+        'Malachi' => 'malachie',
+        'Matthew' => 'matthew',
+        'Mark' => 'mark',
+        'Luke' => 'luke',
+        'John' => 'john',
+        'Acts' => 'acts',
+        'Romans' => 'romans',
+        '1 Corinthians' => '1-corinthians',
+        '2 Corinthians' => '2-corinthians',
+        'Galatians' => 'galatians',
+        'Ephesians' => 'ephesians',
+        'Philippians' => 'philippians',
+        'Colossians' => 'colossians',
+        '1 Thessalonians' => '1-thessalonians',
+        '2 Thessalonians' => '2-thessalonians',
+        '1 Timothy' => '1-timothy',
+        '2 Timothy' => '2-timothy',
+        'Titus' => 'titus',
+        'Philemon' => 'philemon',
+        'Hebrews' => 'hebrews',
+        'James' => 'james',
+        '1 Peter' => '1-peter',
+        '2 Peter' => '2-peter',
+        '1 John' => '1-john',
+        '2 John' => '2-john',
+        '3 John' => '3-john',
+        'Jude' => 'jude',
+        'Revelation' => 'apocalypse',
+    ];
+
+    /** @var array<string, string> */
     protected array $sourceUrls = [
         'douay.json' => 'https://raw.githubusercontent.com/xxruyle/Bible-DouayRheims/main/Douay-Rheims/EntireBible-DR.json',
         'adb.csv' => 'https://raw.githubusercontent.com/rald/ADB/master/adb.csv',
@@ -192,7 +270,7 @@ class BibleTextImportService
 
     protected ?Collection $versionConfigs = null;
 
-    public function __construct()
+    public function __construct(protected BibleStructureService $structure)
     {
         $this->cachePath = storage_path('app/bible-cache');
     }
@@ -202,25 +280,29 @@ class BibleTextImportService
      */
     public function importAll(): array
     {
+        $this->structure->ensureAllBookStructures();
+
         $results = [];
-
-        foreach (BibleVersion::query()->orderBy('id')->get() as $version) {
-            $results[$version->abbreviation] = $this->importVersion($version);
-        }
-
-        $kjvVersion = BibleVersion::query()->where('abbreviation', 'KJV')->first();
+        $versions = BibleVersion::query()->orderBy('id')->get();
+        $kjvVersion = $versions->firstWhere('abbreviation', 'KJV');
 
         if ($kjvVersion) {
-            foreach (['RSVCE', 'NABRE'] as $abbreviation) {
-                $target = BibleVersion::query()->where('abbreviation', $abbreviation)->first();
-
-                if ($target) {
-                    $this->supplementFromVersion($target, $kjvVersion);
-                }
-            }
+            $results[$kjvVersion->abbreviation] = $this->importVersion($kjvVersion, finalize: false);
         }
 
-        $this->finalizeAllBooks();
+        foreach ($versions as $version) {
+            if ($version->abbreviation === 'KJV') {
+                continue;
+            }
+
+            $results[$version->abbreviation] = $this->importVersion($version, finalize: false);
+        }
+
+        $this->applyConfiguredSupplements($kjvVersion);
+        $this->supplementMissingFromOdr();
+        $this->structure->ensureAllBookStructures();
+        $this->structure->syncBookChapterCountsFromStructure();
+        $this->structure->refreshChapterVerseCounts();
 
         foreach (array_keys($results) as $abbreviation) {
             $version = BibleVersion::query()->where('abbreviation', $abbreviation)->firstOrFail();
@@ -230,14 +312,16 @@ class BibleTextImportService
         return $results;
     }
 
-    public function importVersion(BibleVersion $version): int
+    public function importVersion(BibleVersion $version, bool $finalize = true): int
     {
+        $this->structure->ensureVersionStructure($version);
+
         $config = $this->versionConfig($version->abbreviation);
         $import = $config['import'] ?? ['strategy' => 'douay'];
 
         $this->ensureSourceFile($import);
 
-        $imported = match ($import['strategy']) {
+        match ($import['strategy']) {
             'douay' => $this->importDouay($version),
             'thiagobodruk' => $this->importThiagobodruk($version, $import['source']),
             'thiagobodruk_deuterocanonical' => $this->importThiagobodrukWithDeuterocanonical($version, $import['source']),
@@ -246,7 +330,25 @@ class BibleTextImportService
             default => throw new RuntimeException("Unknown import strategy [{$import['strategy']}] for {$version->abbreviation}."),
         };
 
-        $this->finalizeAllBooks();
+        if ($finalize) {
+            $supplementFrom = $import['supplement_from'] ?? null;
+
+            if ($supplementFrom) {
+                $sourceVersion = BibleVersion::query()->where('abbreviation', strtoupper($supplementFrom))->first();
+
+                if ($sourceVersion) {
+                    $this->supplementFromVersion($version, $sourceVersion);
+                }
+            }
+
+            if (($config['canon'] ?? '') === 'catholic') {
+                $this->supplementVersionFromOdr($version);
+            }
+
+            $this->structure->ensureVersionStructure($version);
+            $this->structure->syncBookChapterCountsFromStructure();
+            $this->structure->refreshChapterVerseCounts();
+        }
 
         return $this->countVersesForVersion($version);
     }
@@ -773,10 +875,13 @@ class BibleTextImportService
                 continue;
             }
 
-            foreach ($book->chapters()->where('verse_count', 0)->get() as $emptyChapter) {
+            $expectedChapters = (int) $book->chapter_count;
+
+            for ($chapterNumber = 1; $chapterNumber <= $expectedChapters; $chapterNumber++) {
+                $targetChapter = $this->chapterForBook($book, $chapterNumber);
                 $sourceChapter = BibleChapter::query()
                     ->where('bible_book_id', $sourceBook->id)
-                    ->where('chapter_number', $emptyChapter->chapter_number)
+                    ->where('chapter_number', $chapterNumber)
                     ->where('verse_count', '>', 0)
                     ->with('verses')
                     ->first();
@@ -785,28 +890,156 @@ class BibleTextImportService
                     continue;
                 }
 
+                $existingVerseNumbers = $targetChapter->verses()
+                    ->pluck('verse_number')
+                    ->all();
+                $existingSet = array_flip($existingVerseNumbers);
                 $verseMap = [];
 
                 foreach ($sourceChapter->verses as $verse) {
-                    $verseMap[$verse->verse_number] = $verse->text;
+                    if (! isset($existingSet[$verse->verse_number])) {
+                        $verseMap[$verse->verse_number] = $verse->text;
+                    }
                 }
 
-                $this->importVerseMap($emptyChapter, $verseMap);
+                if ($verseMap !== []) {
+                    $this->importVerseMap($targetChapter, $verseMap);
+                }
             }
         }
     }
 
+    protected function applyConfiguredSupplements(?BibleVersion $kjvVersion): void
+    {
+        foreach ($this->versionConfigs() as $config) {
+            $supplementFrom = $config['import']['supplement_from'] ?? null;
+
+            if (! $supplementFrom) {
+                continue;
+            }
+
+            $target = BibleVersion::query()->where('abbreviation', $config['abbreviation'])->first();
+            $source = BibleVersion::query()->where('abbreviation', strtoupper($supplementFrom))->first();
+
+            if (! $target || ! $source || $target->id === $source->id) {
+                continue;
+            }
+
+            $this->supplementFromVersion($target, $source);
+        }
+    }
+
+    protected function supplementMissingFromOdr(): void
+    {
+        foreach (BibleVersion::query()->orderBy('id')->get() as $version) {
+            $config = $this->versionConfig($version->abbreviation);
+
+            if (($config['canon'] ?? '') !== 'catholic') {
+                continue;
+            }
+
+            $this->supplementVersionFromOdr($version);
+        }
+    }
+
+    protected function supplementVersionFromOdr(BibleVersion $version): void
+    {
+        $localeMap = $this->localizedBookNameMap($version);
+
+        foreach ($version->books()->orderBy('book_order')->get() as $book) {
+            $canonicalName = array_search($book->name, $localeMap, true) ?: $book->name;
+            $slug = $this->odrBookSlugs[$canonicalName] ?? null;
+
+            if (! $slug || ! $this->bookNeedsOdrSupplement($book)) {
+                continue;
+            }
+
+            $odrBook = $this->loadOdrBook($slug);
+
+            foreach ($odrBook['chapters'] ?? [] as $chapterData) {
+                if (! is_array($chapterData)) {
+                    continue;
+                }
+
+                $chapterNumber = (int) ($chapterData['chapter'] ?? 0);
+
+                if ($chapterNumber <= 0 || $chapterNumber > (int) $book->chapter_count) {
+                    continue;
+                }
+
+                $targetChapter = $this->chapterForBook($book, $chapterNumber);
+                $existingVerseNumbers = $targetChapter->verses()->pluck('verse_number')->all();
+                $existingSet = array_flip($existingVerseNumbers);
+                $verseMap = [];
+
+                foreach ($chapterData['verses'] ?? [] as $verseData) {
+                    if (! is_array($verseData)) {
+                        continue;
+                    }
+
+                    $verseNumber = (int) ($verseData['verse'] ?? 0);
+                    $text = $this->cleanText((string) ($verseData['text'] ?? ''));
+
+                    if ($verseNumber <= 0 || $text === '' || isset($existingSet[$verseNumber])) {
+                        continue;
+                    }
+
+                    $verseMap[$verseNumber] = $text;
+                }
+
+                if ($verseMap !== []) {
+                    $this->importVerseMap($targetChapter, $verseMap);
+                }
+            }
+        }
+    }
+
+    protected function bookNeedsOdrSupplement(BibleBook $book): bool
+    {
+        for ($chapterNumber = 1; $chapterNumber <= (int) $book->chapter_count; $chapterNumber++) {
+            $chapter = $book->chapters()->where('chapter_number', $chapterNumber)->first();
+
+            if (! $chapter || (int) $chapter->verse_count === 0) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    protected function loadOdrBook(string $slug): array
+    {
+        $cacheDir = $this->cachePath.'/odr';
+        $path = $cacheDir.'/'.$slug.'.json';
+
+        File::ensureDirectoryExists($cacheDir);
+
+        if (! File::exists($path)) {
+            $response = Http::timeout(180)->get("https://thedouayrheims.com/data/odr/{$slug}.json");
+
+            if (! $response->successful()) {
+                throw new RuntimeException("Failed to download ODR Bible book [{$slug}].");
+            }
+
+            File::put($path, $response->body());
+        }
+
+        $payload = json_decode(File::get($path), true);
+
+        if (! is_array($payload)) {
+            throw new RuntimeException("Invalid ODR Bible JSON for [{$slug}].");
+        }
+
+        return $payload;
+    }
+
     protected function finalizeAllBooks(): void
     {
-        BibleBook::query()->with('chapters')->each(function (BibleBook $book) {
-            $book->chapters()->where('verse_count', 0)->delete();
-
-            $maxChapter = (int) ($book->chapters()->max('chapter_number') ?? 0);
-
-            if ($maxChapter > 0) {
-                $book->update(['chapter_count' => $maxChapter]);
-            }
-        });
+        $this->structure->syncBookChapterCountsFromStructure();
+        $this->structure->refreshChapterVerseCounts();
     }
 
     protected function countVersesForVersion(BibleVersion $version): int

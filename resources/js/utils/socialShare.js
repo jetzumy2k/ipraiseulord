@@ -9,7 +9,7 @@ export const shareNetworks = [
 export function buildSharePayload({ title, text, url }) {
   const pageUrl = url || window.location.href;
   const shareTitle = title || document.title;
-  const shareText = text || shareTitle;
+  const shareText = (text || '').trim() || shareTitle;
 
   return {
     title: shareTitle,
@@ -19,15 +19,27 @@ export function buildSharePayload({ title, text, url }) {
   };
 }
 
+function truncateForTweet(text, url, maxLength = 280) {
+  const suffix = `\n\n${url}`;
+  const available = maxLength - suffix.length - 1;
+
+  if (available <= 0 || text.length <= available) {
+    return text;
+  }
+
+  return `${text.slice(0, Math.max(available, 0)).trim()}…`;
+}
+
 export function shareToNetwork(networkId, payload) {
   const { title, text, url, combined } = buildSharePayload(payload);
   const encodedUrl = encodeURIComponent(url);
   const encodedText = encodeURIComponent(text);
   const encodedCombined = encodeURIComponent(combined);
+  const tweetText = truncateForTweet(text, url);
 
   const urls = {
-    facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}&quote=${encodedText}`,
-    twitter: `https://twitter.com/intent/tweet?url=${encodedUrl}&text=${encodedText}`,
+    facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`,
+    twitter: `https://twitter.com/intent/tweet?url=${encodedUrl}&text=${encodeURIComponent(tweetText)}`,
     whatsapp: `https://wa.me/?text=${encodedCombined}`,
     telegram: `https://t.me/share/url?url=${encodedUrl}&text=${encodedText}`,
   };

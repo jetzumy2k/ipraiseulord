@@ -20,7 +20,7 @@
       </div>
       <div class="mb-3">
         <label for="bible-version" class="form-label">Preferred Bible Version (optional)</label>
-        <input id="bible-version" v-model="bibleVersion" type="text" class="form-control" placeholder="e.g. KJV">
+        <input id="bible-version" v-model="bibleVersion" type="text" class="form-control" placeholder="e.g. RSVCE">
       </div>
       <button type="submit" class="btn btn-primary" :disabled="loading">
         <i v-if="loading" class="fas fa-spinner fa-spin me-1" />
@@ -75,6 +75,7 @@
 import PageStaticHeader from '../../components/shared/PageStaticHeader.vue';
 import SocialShareBar from '../../components/shared/SocialShareBar.vue';
 import { useVisitor } from '../../composables/useVisitor';
+import { applySeo, buildWebPageJsonLd } from '../../utils/seo';
 import { buildAiAdviceShareText } from '../../utils/socialShare';
 
 export default {
@@ -87,7 +88,9 @@ export default {
       answer: '',
       answerSections: [],
       references: [],
+      conversationId: null,
       loading: false,
+      loadingConversation: false,
       error: null,
     };
   },
@@ -134,7 +137,24 @@ export default {
       return this.shareMeta.text;
     },
     shareUrl() {
-      return `${window.location.origin}/ai-advice`;
+      const path = this.conversationId ? `/ai-advice/${this.conversationId}` : '/ai-advice';
+
+      return `${window.location.origin}${path}`;
+    },
+  },
+  watch: {
+    '$route.params.id': {
+      immediate: true,
+      handler(id) {
+        if (id) {
+          this.loadConversation(id);
+        }
+      },
+    },
+    shareText: {
+      handler() {
+        this.updateSeo();
+      },
     },
   },
   methods: {
@@ -144,6 +164,7 @@ export default {
       this.answer = '';
       this.answerSections = [];
       this.references = [];
+      this.conversationId = null;
       const { visitorId } = useVisitor();
 
       try {
@@ -152,14 +173,82 @@ export default {
           visitor_id: visitorId,
           bible_version: this.bibleVersion || null,
         });
-        this.answer = data.answer;
-        this.answerSections = data.answer_sections || [];
-        this.references = data.references || [];
+        this.applyConversation(data);
+        this.syncShareUrl();
+        this.updateSeo();
       } catch (err) {
         this.error = err.response?.data?.message || 'Unable to get a response. Please try again.';
       } finally {
         this.loading = false;
       }
+    },
+    async loadConversation(id) {
+      if (String(this.conversationId) === String(id) && this.answer) {
+        this.updateSeo();
+        return;
+      }
+
+      this.loadingConversation = true;
+      this.error = null;
+
+      try {
+        const { data } = await window.axios.get(`/public/ai/conversations/${id}`);
+        this.applyConversation(data);
+        this.updateSeo();
+      } catch {
+        this.error = 'This shared answer could not be found.';
+        this.answer = '';
+        this.answerSections = [];
+        this.references = [];
+        this.conversationId = null;
+      } finally {
+        this.loadingConversation = false;
+      }
+    },
+    applyConversation(data) {
+      this.question = data.question || '';
+      this.answer = data.answer || '';
+      this.answerSections = data.answer_sections || [];
+      this.references = data.references || [];
+      this.conversationId = data.conversation_id || null;
+
+      if (data.bible_version) {
+        this.bibleVersion = data.bible_version;
+      }
+    },
+    syncShareUrl() {
+      if (!this.conversationId) {
+        return;
+      }
+
+      const currentId = this.$route.params.id;
+
+      if (String(currentId) === String(this.conversationId)) {
+        return;
+      }
+
+      this.$router.replace({
+        name: 'ai-advice',
+        params: { id: String(this.conversationId) },
+      }).catch(() => {});
+    },
+    updateSeo() {
+      if (!this.displaySections.length || !this.shareText) {
+        return;
+      }
+
+      applySeo({
+        title: this.shareTitle,
+        description: this.shareText,
+        url: this.shareUrl,
+        type: 'article',
+        robots: this.conversationId ? 'noindex, follow' : undefined,
+        jsonLd: buildWebPageJsonLd({
+          title: this.shareTitle,
+          description: this.shareText,
+          url: this.shareUrl,
+        }),
+      });
     },
     formatRef(ref) {
       if (typeof ref === 'string') {

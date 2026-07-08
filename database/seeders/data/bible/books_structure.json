@@ -34,7 +34,7 @@
     {"name": "Ezekiel", "abbreviation": "Ezek", "testament": "old", "book_order": 33, "chapter_count": 48},
     {"name": "Daniel", "abbreviation": "Dan", "testament": "old", "book_order": 34, "chapter_count": 14},
     {"name": "Hosea", "abbreviation": "Hos", "testament": "old", "book_order": 35, "chapter_count": 14},
-    {"name": "Joel", "abbreviation": "Joel", "testament": "old", "book_order": 36, "chapter_count": 4},
+    {"name": "Joel", "abbreviation": "Joel", "testament": "old", "book_order": 36, "chapter_count": 3},
     {"name": "Amos", "abbreviation": "Amos", "testament": "old", "book_order": 37, "chapter_count": 9},
     {"name": "Obadiah", "abbreviation": "Obad", "testament": "old", "book_order": 38, "chapter_count": 1},
     {"name": "Jonah", "abbreviation": "Jonah", "testament": "old", "book_order": 39, "chapter_count": 4},

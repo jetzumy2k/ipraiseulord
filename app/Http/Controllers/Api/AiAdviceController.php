@@ -13,9 +13,7 @@ class AiAdviceController extends Controller
 {
     use HandlesCrud;
 
-    public function __construct(protected BibleAiService $bibleAi)
-    {
-    }
+    public function __construct(protected BibleAiService $bibleAi) {}
 
     public function ask(Request $request): JsonResponse
     {
@@ -40,6 +38,20 @@ class AiAdviceController extends Controller
             'answer_sections' => $result['answer_sections'],
             'references' => $conversation->bible_references,
             'conversation_id' => $conversation->id,
+        ]);
+    }
+
+    public function show(int $id): JsonResponse
+    {
+        $conversation = AiConversation::query()->findOrFail($id);
+
+        return response()->json([
+            'question' => $conversation->question,
+            'answer' => $conversation->answer,
+            'answer_sections' => $this->bibleAi->answerSectionsFromAnswer($conversation->answer),
+            'references' => $conversation->bible_references ?? [],
+            'conversation_id' => $conversation->id,
+            'bible_version' => $conversation->bible_version,
         ]);
     }
 
